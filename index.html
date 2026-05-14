@@ -1,0 +1,2337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplement Plan Review &amp; Next Plan</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #db6d28;
+    --purple: #bc8cff;
+    --cyan: #39d2c0;
+    --pink: #f778ba;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1f35 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  .header .date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 17, 23, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-bar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .nav-bar a:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .section-title .icon {
+    font-size: 1.3rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .badge-keep { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-replace { background: rgba(248,81,73,0.15); color: var(--red); }
+  .badge-upgrade { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-new { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .badge-morning { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-lunch { background: rgba(57,210,192,0.15); color: var(--cyan); }
+  .badge-evening { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .badge-preworkout { background: rgba(219,109,40,0.15); color: var(--orange); }
+  .badge-tier1 { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-tier2 { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-tier3 { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+  .mechanism-box {
+    background: rgba(57,210,192,0.06);
+    border: 1px solid rgba(57,210,192,0.15);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.6rem;
+    font-size: 0.83rem;
+    line-height: 1.5;
+    clear: both;
+  }
+
+  .mechanism-box .mech-label {
+    font-weight: 600;
+    color: var(--cyan);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .target-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+  }
+
+  .target-tag {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    background: rgba(57,210,192,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(57,210,192,0.2);
+  }
+
+  .card-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    object-fit: cover;
+    float: left;
+    margin: 0 0.75rem 0.4rem 0;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .card-body::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  .card-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .shop-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(57,210,192,0.08);
+    border: 1px solid rgba(57,210,192,0.2);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .shop-link:hover {
+    background: rgba(57,210,192,0.18);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .shop-links {
+    display: inline-flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  .card-body strong {
+    color: var(--text);
+  }
+
+  .card-body ul {
+    margin: 0.4rem 0 0 1.1rem;
+  }
+
+  .card-body ul li {
+    margin-bottom: 0.25rem;
+  }
+
+  .dosage {
+    display: inline-block;
+    background: var(--surface2);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--cyan);
+    margin-top: 0.4rem;
+  }
+
+  .timing-tag {
+    display: inline-block;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+  }
+
+  .verdict-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 0.6rem 0.9rem;
+    margin-top: 0.75rem;
+    border-radius: 0 6px 6px 0;
+    clear: both;
+    font-size: 0.85rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  table th {
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+
+  table td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  table tr:hover td {
+    background: rgba(88,166,255,0.04);
+  }
+
+  .schedule-table td:first-child {
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    width: 120px;
+  }
+
+  .peptide-card {
+    border-left: 3px solid transparent;
+  }
+
+  .peptide-card.tier-1 { border-left-color: var(--green); }
+  .peptide-card.tier-2 { border-left-color: var(--yellow); }
+  .peptide-card.tier-3 { border-left-color: var(--purple); }
+
+  .evidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .evidence-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .evidence-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .evidence-dot.filled { background: var(--green); }
+  .evidence-dot.half { background: var(--yellow); }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .callout-warning {
+    border-left: 3px solid var(--yellow);
+  }
+
+  .callout-info {
+    border-left: 3px solid var(--accent);
+  }
+
+  .callout-title {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .callout-body {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .change-tag {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .change-tag.added { background: rgba(63,185,80,0.2); color: var(--green); }
+  .change-tag.removed { background: rgba(248,81,73,0.2); color: var(--red); }
+  .change-tag.replaced { background: rgba(210,153,34,0.2); color: var(--yellow); }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin: 1rem 0;
+  }
+
+  .comparison-arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  .stack-cost {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .cost-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .cost-item .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .cost-item .value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 0.2rem;
+  }
+
+  .toggle-section {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-section .arrow {
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .container { padding: 1rem; }
+    .header { padding: 2rem 1rem; }
+    .header h1 { font-size: 1.6rem; }
+    .comparison-row { grid-template-columns: 1fr; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Supplement Plan Review &amp; Optimization</h1>
+  <div class="subtitle">Current Stack Analysis &middot; Suggested Improvements &middot; Peptide Exploration &middot; v2 (Brain + Muscle + Health Focus)</div>
+  <div class="date">May 2026 &middot; Prepared for next planning cycle &middot; Updated with second-pass review</div>
+</div>
+
+<nav class="nav-bar">
+  <a href="#current">Current Stack</a>
+  <a href="#schedule-current">Current Schedule</a>
+  <a href="#changes">Suggested Changes</a>
+  <a href="#additions">New Additions</a>
+  <a href="#peptides">Peptide Candidates</a>
+  <a href="#proposed-schedule">Proposed Schedule</a>
+  <a href="#notes">Notes &amp; Caveats</a>
+  <a href="#excluded" style="color:var(--red);">Excluded</a>
+</nav>
+
+<div class="container">
+
+  <!-- ─────────────── CURRENT STACK ─────────────── -->
+  <section id="current">
+    <div class="section-title">
+      <span class="icon">📦</span> Current Stack (17 compounds)
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">L-Theanine</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Amino acid</span> <a href="https://www.iherb.com/pr/life-extension-l-theanine-60-vegetarian-capsules-100-mg-per-capsule/67026" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1556881286-fc6915169721?w=140&h=140&fit=crop&crop=center" alt="Green tea leaves — natural source of L-Theanine" class="card-img" onerror="this.style.display='none'">
+          Mental calm, focus without jitters (especially with caffeine), mild anxiolytic.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            L-glutamate structural analog that crosses the blood-brain barrier. Increases <strong>GABA, serotonin, and dopamine</strong> levels in the brain. Promotes <strong>alpha brain wave</strong> activity (8-13 Hz) &mdash; the signature of relaxed alertness. With caffeine, it preserves the stimulatory effects while dampening the jitteriness and vasoconstriction.
+            <div class="target-tags">
+              <span class="target-tag">GABAergic system</span>
+              <span class="target-tag">Serotonin / Dopamine</span>
+              <span class="target-tag">Alpha brain waves</span>
+            </div>
+          </div>
+          <br><span class="dosage">200 mg &middot; Onset: 30-60 min</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+          <div class="verdict-box">Excellent pairing with caffeine. Well-supported by human RCTs. One of the cleanest nootropics available. <strong>No change recommended.</strong></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">L-Citrulline</span>
+          <span class="badge badge-keep">Upgraded</span>
+        </div>
+        <div class="card-meta"><span>Nutricost &middot; Amino acid</span> <a href="https://ch.iherb.com/pr/nutricost-l-citrulline-120-tablets-1-250-mg-per-tablet/139432" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=140&h=140&fit=crop&crop=center" alt="Watermelon — richest natural source of L-Citrulline" class="card-img" onerror="this.style.display='none'">
+          Blood flow, muscle pump, circulation, NO production. <strong>Replaced L-Arginine</strong> (125-226% higher arginine bioavailability — bypasses hepatic first-pass metabolism).
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Bypasses hepatic metabolism entirely, converting to <strong>L-Arginine in the kidneys</strong>. Arginine then serves as substrate for <strong>Nitric Oxide Synthase (NOS)</strong> &rarr; NO &rarr; guanylate cyclase &rarr; cGMP &rarr; smooth muscle relaxation &rarr; vasodilation. Produces more sustained NO elevation than direct Arginine supplementation. Also enhances ammonia clearance via the urea cycle, reducing exercise-induced fatigue.
+            <div class="target-tags">
+              <span class="target-tag">NO / NOS pathway</span>
+              <span class="target-tag">Renal Arginine conversion</span>
+              <span class="target-tag">Vascular endothelium</span>
+              <span class="target-tag">Urea cycle / Ammonia clearance</span>
+            </div>
+          </div>
+          <br><span class="dosage">2,500-5,000 mg (2-4 tablets) &middot; Onset: 45-60 min</span>
+          <div class="timing-tag"><span class="badge badge-preworkout">Pre-workout</span></div>
+          <div class="verdict-box"><strong>Upgrade complete.</strong> Nutricost L-Citrulline 1,250mg tablets — clean, no fillers, cost-effective. Take 2-4 tablets 45 min pre-workout for optimal vasodilation and pump.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Neuro-Mag (Mg L-Threonate)</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Mineral</span> <a href="https://www.iherb.com/pr/life-extension-neuro-mag-magnesium-l-threonate-90-vegetarian-capsules-48-mg-per-capsule/40244" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=140&h=140&fit=crop&crop=center" alt="Dark chocolate — magnesium-rich food" class="card-img" onerror="this.style.display='none'">
+          Sleep quality, relaxation, long-term memory &amp; cognitive function.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            The L-Threonate chelation allows magnesium to cross the <strong>blood-brain barrier</strong> (unlike most Mg forms). Once in the brain, Mg²+ enhances <strong>NMDA receptor</strong> signaling at synapses, increasing synaptic density and plasticity in the hippocampus. This underlies the memory and learning benefits. For sleep, Mg²+ modulates GABA receptors and reduces neuronal excitability, promoting relaxation without sedation.
+            <div class="target-tags">
+              <span class="target-tag">NMDA receptors</span>
+              <span class="target-tag">Hippocampal synaptic plasticity</span>
+              <span class="target-tag">GABA modulation</span>
+              <span class="target-tag">Blood-brain barrier penetrant</span>
+            </div>
+          </div>
+          <br><span class="dosage">2000 mg (144 mg elemental Mg) &middot; Onset: 3-7 days (sleep) / 3-4 weeks (cognition)</span>
+          <div class="timing-tag"><span class="badge badge-evening">Before Bed</span></div>
+          <div class="verdict-box">One of the few magnesium forms proven to cross the BBB. Your observation of noticeable cognitive effects is consistent with the literature. <strong>Consider the split-dose approach:</strong> 1 cap afternoon + 2 caps at night.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Ashwagandha (KSM-66)</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension Optimized &middot; Adaptogen</span> <a href="https://www.iherb.com/pr/life-extension-optimized-ashwagandha-60-vegetarian-capsules-125-mg-per-capsule/16416" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1569936906148-06de87cb0681?w=140&h=140&fit=crop&crop=center" alt="Ashwagandha plant (Withania somnifera)" class="card-img" onerror="this.style.display='none'">
+          Stress/cortisol reduction, sleep quality, physical recovery, mild testosterone support.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Active compounds (<strong>withanolides</strong>, primarily withaferin A and withanolide D) modulate the <strong>HPA axis</strong> (hypothalamic-pituitary-adrenal), reducing cortisol output under stress. Also exhibits GABA-mimetic activity, directly binding GABA-A receptors to promote calm. Mild testosterone support occurs via LH (luteinizing hormone) pathway stimulation and cortisol reduction (cortisol and testosterone compete for production resources). Additionally upregulates <strong>T3/T4 thyroid hormones</strong>, increasing metabolic rate.
+            <div class="target-tags">
+              <span class="target-tag">HPA axis / Cortisol</span>
+              <span class="target-tag">GABA-A receptors</span>
+              <span class="target-tag">LH / Testosterone</span>
+              <span class="target-tag">Thyroid (T3/T4)</span>
+            </div>
+          </div>
+          <br><span class="dosage">600 mg &middot; Onset: 2-4 weeks cumulative</span>
+          <div class="timing-tag"><span class="badge badge-evening">Evening</span></div>
+          <div class="verdict-box">Strong human evidence (multiple RCTs). <strong>Suggestion: cycle 8 weeks on / 2 weeks off</strong> to avoid potential thyroid overstimulation and maintain sensitivity. Some literature suggests continuous long-term use may blunt cortisol response excessively.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Lion's Mane</span>
+          <span class="badge badge-keep">Upgraded</span>
+        </div>
+        <div class="card-meta"><span>Real Mushrooms &middot; Mushroom Extract</span> <a href="https://ch.iherb.com/pr/real-mushrooms-lion-s-mane-mushroom-extract-powder-120-capsules/107936" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1625286535466-68a6d71e4568?w=140&h=140&fit=crop&crop=center" alt="Lion's Mane mushroom (Hericium erinaceus)" class="card-img" onerror="this.style.display='none'">
+          Verbal memory, mental clarity, neurogenesis (NGF stimulation).
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Contains two classes of bioactives: <strong>hericenones</strong> (fruiting body) and <strong>erinacines</strong> (mycelium), both of which cross the BBB. They stimulate <strong>Nerve Growth Factor (NGF)</strong> synthesis in astrocytes. NGF promotes neuronal survival, growth, differentiation, and myelination &mdash; the insulating sheath around nerve fibers that speeds signal transmission. This is uniquely relevant for verbal memory and processing speed. Long-term use supports hippocampal neurogenesis (new neuron formation).
+            <div class="target-tags">
+              <span class="target-tag">NGF synthesis</span>
+              <span class="target-tag">Astrocytes</span>
+              <span class="target-tag">Hippocampal neurogenesis</span>
+              <span class="target-tag">Myelination</span>
+            </div>
+          </div>
+          <br><span class="dosage">600 mg full-spectrum &middot; Onset: 4-8 weeks</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+          <div class="verdict-box"><strong>Upgraded to Real Mushrooms.</strong> Hot-water extracted from 100% fruiting body (no grain filler), standardized to &gt;25% beta-glucans. Significantly more potent than the previous CGN mycelium-on-grain product. Verified active hericenone content for NGF stimulation. One of the best Lion's Mane products available on iHerb.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Multivitamin (Two-Per-Day)</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Multi</span> <a href="https://www.iherb.com/pr/life-extension-two-per-day-multivitamin-120-capsules/86453" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=140&h=140&fit=crop&crop=center" alt="Supplement capsules" class="card-img" onerror="this.style.display='none'">
+          Covers nutritional gaps, stable energy, immune support, broad micronutrient coverage.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Provides enzyme cofactors and coenzymes required for hundreds of metabolic reactions. <strong>B vitamins</strong> (B1, B2, B3, B5, B6, B9, B12) serve as coenzymes in energy metabolism (Krebs cycle, electron transport chain) and neurotransmitter synthesis. <strong>Zinc, selenium, and vitamins C/E</strong> support immune cell function and antioxidant defense. Functions as a metabolic safety net &mdash; preventing subclinical deficiencies that degrade performance invisibly.
+            <div class="target-tags">
+              <span class="target-tag">Enzyme cofactors</span>
+              <span class="target-tag">Energy metabolism (Krebs cycle)</span>
+              <span class="target-tag">Immune cell function</span>
+              <span class="target-tag">Antioxidant defense</span>
+            </div>
+          </div>
+          <br><span class="dosage">2 caps/day split &middot; Invisible (background)</span>
+          <div class="timing-tag"><span class="badge badge-morning">Breakfast</span> <span class="badge badge-lunch">Lunch</span></div>
+          <div class="verdict-box">Life Extension Two-Per-Day is one of the best multi formulations on the market. Bioavailable forms of B vitamins, good mineral coverage. <strong>Note:</strong> it contains only 2000 IU D3 and no K2 &mdash; hence the D3+K2 addition below. <strong>Already includes:</strong> 25 mg Zinc (as OptiZinc), 2 mg Copper, 200 mcg Selenium, 100 mcg Chromium &mdash; no need for standalone Zinc supplementation.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Alpha-Lipoic Acid + Biotin</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Antioxidant</span> <a href="https://www.iherb.com/pr/life-extension-alpha-lipoic-acid-with-biotin-60-capsules/6615" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=140&h=140&fit=crop&crop=center" alt="Spinach — rich in Alpha-Lipoic Acid" class="card-img" onerror="this.style.display='none'">
+          Blood sugar control (reduced post-meal drowsiness), universal antioxidant (both water &amp; fat soluble).
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Activates <strong>AMPK</strong> (AMP-activated protein kinase) in muscle and liver, improving <strong>GLUT4 transporter</strong> translocation to cell surfaces &rarr; enhanced glucose uptake from blood into cells. This is why it reduces post-meal drowsiness (less blood sugar spike). Unique among antioxidants because it's both water- AND fat-soluble, allowing it to operate in every tissue compartment. Also regenerates other antioxidants (vitamin C, vitamin E, and glutathione), acting as a "recycler" for the entire antioxidant network.
+            <div class="target-tags">
+              <span class="target-tag">AMPK pathway</span>
+              <span class="target-tag">GLUT4 glucose transport</span>
+              <span class="target-tag">Glutathione recycling</span>
+              <span class="target-tag">Universal antioxidant</span>
+            </div>
+          </div>
+          <br><span class="dosage">250-600 mg &middot; Onset: Weeks/months</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning (30 min before carbs)</span></div>
+          <div class="verdict-box">Good choice for metabolic health. The Biotin co-formulation compensates for ALA's known biotin-depleting effect. <strong>No change.</strong> If you add Berberine in the future, ALA becomes even more synergistic for glucose control.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">L-Tyrosine</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>NOW Foods &middot; Amino acid</span> <a href="https://www.iherb.com/pr/now-foods-l-tyrosine-500-mg-120-capsules/836" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1508061253366-f7da158b6d46?w=140&h=140&fit=crop&crop=center" alt="Almonds and cheese — dietary sources of L-Tyrosine" class="card-img" onerror="this.style.display='none'">
+          Cognitive focus under stress, dopamine precursor, mental endurance during demanding work.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Amino acid precursor in the <strong>catecholamine synthesis cascade:</strong> L-Tyrosine &rarr; L-DOPA (via tyrosine hydroxylase, the rate-limiting step) &rarr; <strong>Dopamine</strong> &rarr; Norepinephrine &rarr; Epinephrine. Under acute stress, catecholamine turnover in the <strong>prefrontal cortex</strong> increases dramatically, depleting tyrosine pools. Supplementation maintains working memory, executive function, and cognitive flexibility during stressful or sleep-deprived states. Most effective when catecholamine demand is high (heavy workdays, deadlines).
+            <div class="target-tags">
+              <span class="target-tag">Catecholamine synthesis</span>
+              <span class="target-tag">Dopamine / Norepinephrine</span>
+              <span class="target-tag">Prefrontal cortex</span>
+              <span class="target-tag">Tyrosine hydroxylase</span>
+            </div>
+          </div>
+          <br><span class="dosage">500-2000 mg &middot; Onset: 30-60 min</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning (workdays only)</span></div>
+          <div class="verdict-box">Good call removing it on weekends &mdash; prevents dopamine receptor downregulation. <strong>Tip:</strong> use NALT (N-Acetyl-L-Tyrosine) only if you have absorption issues; regular L-Tyrosine is the superior form for most people despite NALT's marketing.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Creatine Monohydrate</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>SPONSER &middot; Creapure&reg;</span> <a href="https://sponser.com/en/products/creatine-monohydrate" class="shop-link" target="_blank" rel="noopener">&#128722; SPONSER</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1558030006-450675393462?w=140&h=140&fit=crop&crop=center" alt="Red meat — primary dietary source of creatine" class="card-img" onerror="this.style.display='none'">
+          Increased cellular ATP, strength/power, reduced mental fatigue and brain fog.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Stored in cells as <strong>phosphocreatine (PCr)</strong>. During high-intensity demands, PCr donates its phosphate group to ADP &rarr; regenerates <strong>ATP</strong> (the cell's energy currency) via <strong>creatine kinase</strong>. In muscle: extends capacity for short-burst, high-power output (sets of 1-8 reps). In the brain: the prefrontal cortex is highly ATP-dependent; saturated creatine stores reduce mental fatigue, improve working memory, and protect against cognitive decline during sleep deprivation. Also increases cell hydration (water follows creatine into cells), which itself is an anabolic signal.
+            <div class="target-tags">
+              <span class="target-tag">Phosphocreatine / ATP shuttle</span>
+              <span class="target-tag">Creatine kinase</span>
+              <span class="target-tag">Skeletal muscle</span>
+              <span class="target-tag">Prefrontal cortex</span>
+              <span class="target-tag">Cell volumization</span>
+            </div>
+          </div>
+          <br><span class="dosage">5 g/day &middot; Onset: 3-4 weeks (saturation)</span>
+          <div class="timing-tag"><span class="badge badge-morning">Any time (consistency matters)</span></div>
+          <div class="verdict-box">One of the most well-researched supplements in existence. Benefits for both physical performance AND cognition. <strong>No change.</strong> Just ensure consistent daily dosing &mdash; timing doesn't significantly matter post-saturation.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Omega-3 (Fish Oil)</span>
+          <span class="badge badge-keep">Keep</span>
+        </div>
+        <div class="card-meta"><span>Life Extension Super Omega-3 &middot; Essential fatty acid</span> <a href="https://www.iherb.com/pr/life-extension-super-omega-3-epa-dha-fish-oil-sesame-lignans-olive-extract-120-softgels/67020" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=140&h=140&fit=crop&crop=center" alt="Salmon — richest source of Omega-3 EPA/DHA" class="card-img" onerror="this.style.display='none'">
+          Anti-inflammatory, cardiovascular support, brain structure maintenance, mood regulation.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Two active components with distinct roles. <strong>EPA</strong> (eicosapentaenoic acid): competitively inhibits arachidonic acid in the <strong>COX and LOX</strong> inflammatory pathways &rarr; produces anti-inflammatory <strong>resolvins and protectins</strong> instead of pro-inflammatory prostaglandins/leukotrienes. This is the anti-inflammatory and mood-regulating component. <strong>DHA</strong> (docosahexaenoic acid): structural lipid comprising ~60% of brain neuronal membranes. Maintains membrane fluidity, neurotransmitter receptor function, and signal transduction speed. Chronic deficiency literally degrades brain structure.
+            <div class="target-tags">
+              <span class="target-tag">COX / LOX pathways</span>
+              <span class="target-tag">Resolvins / Protectins</span>
+              <span class="target-tag">Neuronal membrane structure</span>
+              <span class="target-tag">Cardiovascular endothelium</span>
+            </div>
+          </div>
+          <br><span class="dosage">2-4 g total (aim for 1g+ EPA) &middot; Cumulative</span>
+          <div class="timing-tag"><span class="badge badge-lunch">With fattest meal</span></div>
+          <div class="verdict-box">Foundational supplement. Your Super Omega-3 is an excellent choice &mdash; it includes <strong>sesame lignans</strong> (enhance EPA anti-inflammatory action by inhibiting delta-5-desaturase) and <strong>olive polyphenols</strong> (hydroxytyrosol, independent cardiovascular protection). These extras are lost in higher-concentration products like Mega EPA/DHA. <strong>Action:</strong> at 2 softgels/day you get ~750 mg EPA. Take <strong>3 softgels/day</strong> to hit the 1 g+ EPA target while keeping the lignans and polyphenol benefits.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Vitamin D3 + K2 + Sea-Iodine</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Fat-soluble vitamins</span> <a href="https://ch.iherb.com/pr/life-extension-vitamins-d-and-k-with-sea-iodine-60-capsules/78779" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1464660439080-b79116909ce7?w=140&h=140&fit=crop&crop=center" alt="Bright sunshine — Vitamin D3 synthesis" class="card-img" onerror="this.style.display='none'">
+          Immune function, bone density, calcium routing, thyroid support (iodine), testosterone support.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            <strong>D3 (5000 IU):</strong> Converted to calcitriol, binds <strong>VDR</strong> in cell nuclei, modulating 1000+ genes controlling immune cell differentiation, calcium homeostasis, and Leydig cell testosterone synthesis.
+            <strong>K2 (MK-4 + MK-7):</strong> Activates <strong>osteocalcin</strong> (calcium &rarr; bones) and <strong>Matrix GLA Protein</strong> (prevents arterial calcification). Without K2, D3-enhanced calcium absorption can deposit in arteries.
+            <strong>Sea-Iodine (1000 mcg):</strong> Required for thyroid hormone (T3/T4) synthesis.
+            <div class="target-tags">
+              <span class="target-tag">VDR nuclear receptor</span>
+              <span class="target-tag">Osteocalcin / MGP</span>
+              <span class="target-tag">T-cell immunity</span>
+              <span class="target-tag">Thyroid (T3/T4)</span>
+            </div>
+          </div>
+          <br><span class="dosage">1 capsule/day &middot; 5000 IU D3 + 2100 mcg K</span>
+          <div class="timing-tag"><span class="badge badge-lunch">With lunch (fat-soluble)</span></div>
+          <div class="verdict-box">Your multivitamin only provides 2000 IU D3 and no K2. This tops up to the optimal 5000 IU + adds critical K2 for calcium routing safety. <strong>Tip:</strong> Get a 25(OH)D blood test after 8 weeks. Target: 50-70 ng/mL.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">NAD+ Cell Regenerator (NR / NIAGEN)</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; NAD+ precursor</span> <a href="https://ch.iherb.com/pr/life-extension-nad-cell-regenerator-and-resveratrol-elite-30-vegetarian-capsules/105828" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=140&h=140&fit=crop&crop=center" alt="DNA double helix — NR supports DNA repair via NAD+" class="card-img" onerror="this.style.display='none'">
+          Cellular energy, DNA repair, mitochondrial function, healthy aging. Replaces NMN recommendation (equivalent NAD+ raising, freely available in EU).
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Nicotinamide Riboside (300mg NIAGEN) is converted to NMN by <strong>NRK enzymes</strong>, then to <strong>NAD+</strong> by NMNAT. NAD+ fuels: (1) <strong>Sirtuins (SIRT1-7)</strong> — DNA repair, mitochondrial biogenesis; (2) <strong>Mitochondrial Complex I</strong> — ATP production; (3) <strong>PARPs</strong> — DNA damage repair. Clinical trials show 40-90% NAD+ elevation at 300mg. Synergizes with Apigenin (preserves NAD+ via CD38 inhibition).
+            <div class="target-tags">
+              <span class="target-tag">NAD+ / NRK &rarr; NMNAT</span>
+              <span class="target-tag">Sirtuins (SIRT1-7)</span>
+              <span class="target-tag">Mitochondrial Complex I</span>
+              <span class="target-tag">PARP DNA repair</span>
+            </div>
+          </div>
+          <br><span class="dosage">1 capsule/day (300 mg NR) &middot; Morning with meal</span>
+          <div class="timing-tag"><span class="badge badge-morning">With breakfast</span></div>
+          <div class="verdict-box">NIAGEN is the most clinically-studied NR form (30+ human trials, ChromaDex patent). Also contains trace resveratrol, quercetin, fisetin (sub-therapeutic — treat as bonus). <strong>Why NR over NMN:</strong> equivalent NAD+-raising efficacy, no EU Novel Food restrictions, available on iHerb CH.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Apigenin</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Swanson Vitamins &middot; Flavonoid</span> <a href="https://ch.iherb.com/pr/swanson-vitamins-apigenin-50-mg-90-capsules/135804" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=140&h=140&fit=crop&crop=center" alt="Chamomile flowers — richest natural source of apigenin" class="card-img" onerror="this.style.display='none'">
+          Sleep quality, NAD+ preservation (CD38 inhibition), mild aromatase inhibition.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Acts on three distinct targets: (1) positive allosteric modulator of <strong>GABA-A receptors</strong> at the benzodiazepine site &rarr; anxiolytic/sleep without dependence; (2) inhibits <strong>CD38 enzyme</strong> — the primary NAD+ consumer — preserving NAD+ for sirtuins and mitochondria; (3) inhibits <strong>aromatase (CYP19A1)</strong>, reducing testosterone-to-estradiol conversion.
+            <div class="target-tags">
+              <span class="target-tag">GABA-A (benzodiazepine site)</span>
+              <span class="target-tag">CD38 / NAD+ preservation</span>
+              <span class="target-tag">Aromatase (CYP19A1)</span>
+            </div>
+          </div>
+          <br><span class="dosage">50 mg &middot; Before bed</span>
+          <div class="timing-tag"><span class="badge badge-evening">Before bed</span></div>
+          <div class="verdict-box">Dual-purpose: strengthens your sleep stack (pairs with Mg L-Threonate) AND preserves the NAD+ that your morning NR produces. The CD38-inhibition + NR production combo is the optimal NAD+ strategy.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Tongkat Ali (Eurycoma longifolia)</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Nutricost &middot; Adaptogen / Testosterone</span> <a href="https://ch.iherb.com/pr/nutricost-tongkat-ali-60-capsules/107427" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Eurycoma_Longifolia_Tongkat_Ali.jpg/320px-Eurycoma_Longifolia_Tongkat_Ali.jpg" alt="Tongkat Ali plant" class="card-img" onerror="this.style.display='none'">
+          Testosterone optimization, cortisol reduction, body composition improvement.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Active compound <strong>eurycomanone</strong>: (1) stimulates <strong>Leydig cells</strong> via LH signaling to increase testosterone; (2) reduces <strong>SHBG</strong>, freeing bound testosterone; (3) modulates HPA axis to reduce cortisol via CYP17 regulation (different mechanism than Ashwagandha). Also shows anti-estrogenic activity by reducing aromatization.
+            <div class="target-tags">
+              <span class="target-tag">Leydig cells / LH</span>
+              <span class="target-tag">SHBG reduction</span>
+              <span class="target-tag">HPA axis / CYP17</span>
+            </div>
+          </div>
+          <br><span class="dosage">200-400 mg &middot; 5 days on / 2 off</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+          <div class="verdict-box">Multiple human RCTs support testosterone and cortisol effects. Cycle 5 on / 2 off, or use during Ashwagandha OFF weeks. Synergizes with Boron (both reduce SHBG through different mechanisms).</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">CoQ10 (Ubiquinol)</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Super Ubiquinol</span> <a href="https://ch.iherb.com/pr/life-extension-super-ubiquinol-coq10-with-enhanced-mitochondrial-support-100-mg-60-softgels/22327" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1615937691194-97dbd3f3dc29?w=140&h=140&fit=crop&crop=center" alt="Heart — CoQ10 supports cardiac energy" class="card-img" onerror="this.style.display='none'">
+          Mitochondrial energy production, cardiovascular protection, exercise recovery, neuroprotection.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Essential electron carrier in <strong>Mitochondrial Complex III</strong> of the electron transport chain. Shuttles electrons between Complex I/II and Complex III for ATP production. Ubiquinol (reduced form) is 3-8x more bioavailable than ubiquinone. Endogenous production declines from age ~25. Also acts as a potent lipid-soluble antioxidant protecting cell membranes. Complements Creatine (Creatine recycles ATP, CoQ10 helps produce it).
+            <div class="target-tags">
+              <span class="target-tag">Mitochondrial Complex III</span>
+              <span class="target-tag">Electron transport chain</span>
+              <span class="target-tag">Cardiac muscle</span>
+              <span class="target-tag">Lipid antioxidant</span>
+            </div>
+          </div>
+          <br><span class="dosage">100 mg Ubiquinol &middot; Daily with food</span>
+          <div class="timing-tag"><span class="badge badge-morning">With breakfast (fat-soluble)</span></div>
+          <div class="verdict-box">Kaneka Ubiquinol patent (the gold standard). Enhanced Mitochondrial Support formula includes shilajit for improved CoQ10 absorption. Take with food containing fat.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">N-Acetyl-L-Cysteine (NAC)</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Life Extension &middot; Amino acid / Antioxidant</span> <a href="https://ch.iherb.com/pr/life-extension-n-acetyl-l-cysteine-600-mg-60-capsules/47340" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=140&h=140&fit=crop&crop=center" alt="Bone broth — rich in glycine, a glutathione precursor" class="card-img" onerror="this.style.display='none'">
+          Glutathione production (master antioxidant), liver protection, mucolytic, supports GlyNAC protocol for longevity.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            NAC is the rate-limiting precursor for <strong>glutathione (GSH)</strong> synthesis. GSH is the body's master intracellular antioxidant, declining with age. NAC provides cysteine (the limiting amino acid) to the <strong>gamma-glutamylcysteine ligase</strong> enzyme. GSH then neutralizes reactive oxygen species, regenerates vitamins C and E, and supports Phase II liver detoxification. Part of the <strong>GlyNAC protocol</strong> (pair with Glycine) shown in RCTs to reverse 7 aging hallmarks simultaneously.
+            <div class="target-tags">
+              <span class="target-tag">Glutathione synthesis</span>
+              <span class="target-tag">Phase II detoxification</span>
+              <span class="target-tag">ROS neutralization</span>
+              <span class="target-tag">GlyNAC protocol</span>
+            </div>
+          </div>
+          <br><span class="dosage">600 mg &middot; 1-2x daily</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+          <div class="verdict-box">Half of the GlyNAC duo. <strong>Still needed:</strong> Glycine (~3g before bed) to complete the protocol. Together they restore youthful glutathione levels and reverse multiple aging hallmarks per published RCTs (Sekhar et al., 2022-2024).</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Boron (Triple Boron)</span>
+          <span class="badge badge-new">New</span>
+        </div>
+        <div class="card-meta"><span>Source Naturals &middot; Trace mineral</span> <a href="https://ch.iherb.com/pr/source-naturals-triple-boron-3-mg-200-capsules/7273" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH</a></div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=140&h=140&fit=crop&crop=center" alt="Avocado — rich dietary source of boron" class="card-img" onerror="this.style.display='none'">
+          Free testosterone increase (+28%), estradiol reduction (-39%), bone health, anti-inflammatory.
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Modulates <strong>SHBG</strong> binding affinity, freeing testosterone into bioactive form. Shifts <strong>estrogen metabolism</strong> toward weaker 2-hydroxyestrone. Required for the hydroxylation step converting 25(OH)D to active 1,25(OH)&#8322;D. Inhibits <strong>NF-kB</strong> and reduces CRP, TNF-alpha, IL-6. Amplifies effects of Tongkat Ali and Ashwagandha on testosterone.
+            <div class="target-tags">
+              <span class="target-tag">SHBG binding</span>
+              <span class="target-tag">Estrogen hydroxylation</span>
+              <span class="target-tag">Vitamin D activation</span>
+              <span class="target-tag">NF-kB / Inflammation</span>
+            </div>
+          </div>
+          <br><span class="dosage">6 mg (2 capsules) &middot; Morning with food</span>
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+          <div class="verdict-box">One of the cheapest and most effective testosterone-support compounds. 200 capsules = ~3 months at 2 caps/day. <strong>Caution:</strong> Stay under 20 mg/day. Synergizes with Tongkat Ali (both reduce SHBG via different mechanisms).</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────── UPDATED SCHEDULE ─────────────── -->
+  <section id="schedule-current">
+    <div class="section-title">
+      <span class="icon">🕐</span> Updated Daily Schedule (17 compounds)
+    </div>
+
+    <table class="schedule-table">
+      <thead>
+        <tr><th>Timing</th><th>Supplements</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Morning<br><small>(empty stomach)</small></td>
+          <td>L-Tyrosine + L-Theanine + Caffeine + Lion's Mane + Alpha-Lipoic Acid + NAC (600mg) + Tongkat Ali + Boron (6mg)</td>
+          <td>Remove Tyrosine on weekends. ALA 30 min before first high-carb meal. Tongkat: 5 days on / 2 off.</td>
+        </tr>
+        <tr>
+          <td>With Breakfast</td>
+          <td>NAD+ Cell Regenerator (NR 300mg) + CoQ10 Ubiquinol (100mg)</td>
+          <td>Take with meal for absorption. NR pairs with Apigenin (PM) for NAD+ production + preservation.</td>
+        </tr>
+        <tr>
+          <td>After Lunch</td>
+          <td>Omega-3 (3 softgels) + Multivitamin (2 caps) + D3/K2/Sea-Iodine</td>
+          <td>All fat-soluble — take with fattest meal. 3 softgels Omega-3 hits 1g+ EPA target.</td>
+        </tr>
+        <tr>
+          <td>Pre-Workout</td>
+          <td>L-Citrulline (2-4 tablets, 2,500-5,000mg) + Creatine (5g)</td>
+          <td>45 min before activity.</td>
+        </tr>
+        <tr>
+          <td>Before Bed</td>
+          <td>Neuro-Mag + Ashwagandha + Apigenin (50mg)</td>
+          <td>1-2 hours before sleep. Apigenin enhances sleep + preserves NAD+ via CD38 inhibition.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 0.8rem; padding: 0.6rem; background: rgba(139,233,253,0.05); border-radius: 6px; font-size: 0.78rem; color: var(--text-muted);">
+      <strong>Still needed to complete GlyNAC protocol:</strong> Glycine (~3g) — take before bed (also improves sleep). This completes the NAC pairing for glutathione restoration.<br>
+      <strong>Ashwagandha cycling:</strong> 8 weeks on / 2 weeks off. During OFF weeks, rely on Tongkat Ali + Apigenin + Magnesium for stress/sleep support.
+    </div>
+  </section>
+
+  <!-- ─────────────── SUGGESTED CHANGES ─────────────── -->
+  <section id="changes">
+    <div class="section-title">
+      <span class="icon">🔄</span> Suggested Changes to Current Stack
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">Philosophy: Upgrade Before Adding</div>
+      <div class="callout-body">Before expanding the stack, it's worth optimizing what's already there. These changes improve the efficacy of compounds you're already taking, with no additional complexity.</div>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card" style="border-left: 3px solid var(--yellow);">
+        <div class="card-header">
+          <span class="card-title">L-Arginine &rarr; L-Citrulline</span>
+          <span class="badge badge-keep">&#10003; Done</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=140&h=140&fit=crop&crop=center" alt="Watermelon — richest natural source of L-Citrulline" class="card-img" onerror="this.style.display='none'">
+          <strong>Why:</strong> Oral L-Arginine is heavily metabolized by the liver (first-pass effect) before reaching systemic circulation. L-Citrulline bypasses hepatic metabolism entirely, converting to Arginine in the kidneys. 2025 pharmacokinetic data shows:
+          <ul>
+            <li><strong>125-226% higher arginine bioavailability</strong> vs. direct Arginine supplementation</li>
+            <li>Peak levels reached in <strong>half the time</strong> (60 min vs. 120 min with Citrulline HCl)</li>
+            <li>More sustained NO elevation over time</li>
+          </ul>
+          <span class="dosage">Dose: 6-8 g L-Citrulline or 8-10 g Citrulline Malate (2:1)</span>
+          <br><strong>Brand suggestion:</strong> Nutricost L-Citrulline (pure powder, cost-effective) or Life Extension if you prefer capsules. <span class="shop-links"><a href="https://www.iherb.com/pr/now-foods-l-citrulline-1-500-mg-180-veg-capsules-750-mg-per-capsule/14209" class="shop-link" target="_blank" rel="noopener">&#128722; NOW Citrulline</a> <a href="https://www.iherb.com/pr/nutricost-l-citrulline-180-capsules-750-mg-per-capsule/139435" class="shop-link" target="_blank" rel="noopener">&#128722; Nutricost Citrulline</a></span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--yellow);">
+        <div class="card-header">
+          <span class="card-title">Lion's Mane &rarr; Real Mushrooms Extract</span>
+          <span class="badge badge-keep">&#10003; Done</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1625286535466-68a6d71e4568?w=140&h=140&fit=crop&crop=center" alt="Lion's Mane mushroom — dual extract upgrade" class="card-img" onerror="this.style.display='none'">
+          <strong>Previous:</strong> California Gold Nutrition Fungiology (mycelium-on-grain, unstandardized).<br><br>
+          <strong>Now using:</strong> <strong>Real Mushrooms Lion's Mane Extract</strong> (120 capsules). Hot-water extracted from 100% fruiting body, standardized to &gt;25% beta-glucans. No grain filler, verified active content. Excellent mid-tier upgrade.
+          <br><br>
+          <span class="shop-links"><a href="https://ch.iherb.com/pr/real-mushrooms-lion-s-mane-mushroom-extract-powder-120-capsules/107936" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF25.39</a></span>
+          <span class="dosage">Dose: 2 capsules/day (1000mg extract)</span>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">Ashwagandha Cycling Protocol</span>
+          <span class="badge badge-upgrade">Optimize</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1569936906148-06de87cb0681?w=140&h=140&fit=crop&crop=center" alt="Ashwagandha plant" class="card-img" onerror="this.style.display='none'">
+          <strong>What to change:</strong> Implement a cycling schedule rather than continuous daily use.
+          <ul>
+            <li><strong>8 weeks ON / 2 weeks OFF</strong></li>
+            <li>Prevents potential thyroid overstimulation (Ashwagandha upregulates T3/T4)</li>
+            <li>Maintains receptor sensitivity for cortisol modulation</li>
+            <li>Anecdotally, effects feel "fresh" when restarting after a break</li>
+          </ul>
+          <strong>During OFF weeks:</strong> Rely on Magnesium L-Threonate + Apigenin (see additions) for sleep/stress support.
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">Omega-3: Verify EPA Content</span>
+          <span class="badge badge-upgrade">Optimize</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=140&h=140&fit=crop&crop=center" alt="Salmon — Omega-3 EPA/DHA source" class="card-img" onerror="this.style.display='none'">
+          <strong>Your product (LE Super Omega-3)</strong> is a great formula &mdash; it includes sesame lignans + olive polyphenols that cheaper/higher-concentration products lack. <strong>Don't switch to Mega EPA/DHA</strong> &mdash; you'd lose those extras.
+          <br><br>
+          <strong>The fix is simple &mdash; adjust your dose:</strong>
+          <ul>
+            <li><strong>2 softgels/day = ~750 mg EPA</strong> &mdash; slightly below target</li>
+            <li><strong>3 softgels/day = ~1,125 mg EPA</strong> &mdash; optimal for anti-inflammatory and mood benefits &#10003;</li>
+            <li>Take all softgels with your fattest meal (lunch) for best absorption</li>
+            <li>The sesame lignans in your formula actively <strong>enhance EPA's anti-inflammatory action</strong> by inhibiting delta-5-desaturase (redirects fatty acid metabolism away from pro-inflammatory arachidonic acid)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────── REMAINING SUGGESTIONS ─────────────── -->
+  <section id="additions">
+    <div class="section-title">
+      <span class="icon">✨</span> Still Suggested (Not Yet Purchased)
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">Next Additions to Consider</div>
+      <div class="callout-body">These are the remaining compounds from the analysis that are <strong>not yet purchased</strong>. Add after assessing the current 17-compound stack for 4-6 weeks.</div>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">Glycine (GlyNAC Protocol — missing half)</span>
+          <span class="badge badge-new">Priority: HIGH</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=140&h=140&fit=crop&crop=center" alt="Bone broth — rich in glycine" class="card-img" onerror="this.style.display='none'">
+          <strong>Why needed:</strong> You purchased NAC (Life Extension 600mg x2) but Glycine is the other rate-limiting precursor for glutathione. Without it, NAC alone only provides ~50% of the GlyNAC protocol's published benefits.
+          <ul>
+            <li><strong>GlyNAC protocol:</strong> Multiple RCTs showing reversal of 7 aging hallmarks simultaneously when both precursors are provided together</li>
+            <li><strong>Sleep bonus:</strong> 3g Glycine before bed independently improves sleep quality (separate from glutathione effects)</li>
+            <li><strong>Muscle:</strong> Supports collagen synthesis and acts as an inhibitory neurotransmitter for recovery</li>
+          </ul>
+          <span class="dosage">Dose: 3-4g daily. Take before bed (sleep benefit + GlyNAC evening half)</span>
+          <br><strong>Brand:</strong> NOW Foods Glycine 1000mg capsules or bulk powder (very cheap). <span class="shop-links"><a href="https://www.iherb.com/pr/now-foods-glycine-1-000-mg-100-veg-capsules/18106" class="shop-link" target="_blank" rel="noopener">&#128722; NOW Glycine capsules</a> <a href="https://www.iherb.com/pr/now-foods-glycine-pure-powder-454-g/653" class="shop-link" target="_blank" rel="noopener">&#128722; NOW Glycine powder (better value)</a></span>
+          <div class="timing-tag"><span class="badge badge-evening">Before bed (3g)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <div class="card-header">
+          <span class="card-title">Sulforaphane (Broccoli Sprout Extract)</span>
+          <span class="badge badge-new">Priority: MEDIUM-HIGH</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=140&h=140&fit=crop&crop=center" alt="Broccoli — sulforaphane source, especially from sprouts" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> The most potent natural activator of the Nrf2 pathway &mdash; your body's master regulator of antioxidant defense and detoxification. 84 clinical trials conducted to date.
+          <ul>
+            <li><strong>Nrf2 activation:</strong> Upregulates hundreds of protective genes (SOD, catalase, glutathione peroxidase, phase II detox enzymes)</li>
+            <li><strong>Brain:</strong> Potent neuroprotection, crosses the BBB</li>
+            <li><strong>Exercise synergy:</strong> Amplifies exercise-induced Nrf2 activation by 2.1x</li>
+            <li><strong>Detoxification:</strong> Enhances Phase II liver detox &mdash; particularly helpful given your expanded 17-compound stack</li>
+          </ul>
+          <span class="dosage">Dose: 10-30 mg sulforaphane (or ~100 mg broccoli sprout extract standardized to 10% SFN)</span>
+          <br><strong>Brand:</strong> Jarrow BroccoMax (myrosinase-activated). <span class="shop-links"><a href="https://www.iherb.com/pr/jarrow-formulas-broccomax-myrosinase-activated-sgs-60-delayed-release-veggie-caps/4297" class="shop-link" target="_blank" rel="noopener">&#128722; BroccoMax</a></span>
+          <br><strong>Tip:</strong> Must contain <strong>myrosinase enzyme</strong> (or take with mustard seed powder) for proper conversion.
+          <div class="timing-tag"><span class="badge badge-morning">Morning (empty stomach)</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 id="excluded" style="color: var(--red); margin: 2rem 0 1rem; font-size: 1.15rem;">Compounds Reviewed &amp; Excluded</h3>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1464660439080-b79116909ce7?w=140&h=140&fit=crop&crop=center" alt="Bright sunshine over a field — sunlight triggers Vitamin D3 synthesis in skin" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> Your multivitamin contains only ~2000 IU D3 and zero K2. Most adults, especially those not getting 20+ min of midday sun, are deficient at this dose. D3 without K2 can redirect calcium to arteries instead of bones.
+          <ul>
+            <li><strong>D3:</strong> Immune function, mood, testosterone support, bone density</li>
+            <li><strong>K2 (MK-7):</strong> Directs calcium to bones/teeth, protects arteries, synergistic with D3</li>
+            <li>Both are fat-soluble &rarr; take with your Omega-3 at lunch</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            <strong>D3:</strong> Converted in liver to 25(OH)D, then in kidneys to <strong>1,25(OH)₂D (calcitriol)</strong>, the active hormone. Calcitriol binds the <strong>Vitamin D Receptor (VDR)</strong> in cell nuclei, modulating expression of 1000+ genes controlling immune cell differentiation (T-cells, macrophages), calcium homeostasis, and cell growth. Also supports Leydig cell testosterone synthesis.
+            <strong>K2 (MK-7):</strong> Activates <strong>osteocalcin</strong> (directs calcium into bones) and <strong>Matrix GLA Protein</strong> (prevents calcium from depositing in arterial walls). Without K2, D3-enhanced calcium absorption can calcify arteries.
+            <div class="target-tags">
+              <span class="target-tag">VDR nuclear receptor</span>
+              <span class="target-tag">Gene expression (1000+ genes)</span>
+              <span class="target-tag">Osteocalcin / MGP</span>
+              <span class="target-tag">T-cell immunity</span>
+              <span class="target-tag">Calcium routing</span>
+            </div>
+          </div>
+          <span class="dosage">Dose: 5000 IU D3 + 100-200 mcg K2 (MK-7)</span>
+          <br><strong>Brand:</strong> Life Extension Vitamins D and K with Sea-Iodine (60 capsules). Includes 5000 IU D3, 2100 mcg K complex (MK-4 + MK-7), plus 1000 mcg iodine for thyroid support. <span class="shop-links"><a href="https://ch.iherb.com/pr/life-extension-vitamins-d-and-k-with-sea-iodine-60-capsules/78779" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF15.29</a></span>
+          <br><strong>Tip:</strong> Get a 25(OH)D blood test after 8 weeks. Target: 50-70 ng/mL.
+          <div class="timing-tag"><span class="badge badge-lunch">With lunch (with fat)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <div class="card-header">
+          <span class="card-title">2. Apigenin</span>
+          <span class="badge badge-new">Priority: High &mdash; &#10003; PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=140&h=140&fit=crop&crop=center" alt="Chamomile flowers — richest natural source of apigenin" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> Dual-purpose compound that strengthens your sleep stack AND supports longevity:
+          <ul>
+            <li><strong>Sleep:</strong> Mild GABAergic / anxiolytic. Pairs beautifully with Magnesium L-Threonate to create a potent non-sedative sleep stack</li>
+            <li><strong>Longevity:</strong> Inhibits CD38, the primary enzyme that degrades NAD+. This preserves your body's NAD+ levels without needing NMN</li>
+            <li>Also mildly inhibits aromatase (may support testosterone in men)</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            A flavonoid (found naturally in chamomile and parsley) that acts on three distinct targets: (1) positive allosteric modulator of <strong>GABA-A receptors</strong> at the benzodiazepine site &rarr; anxiolytic/sleep without dependence risk; (2) inhibits <strong>CD38 enzyme</strong>, the primary NAD+ consumer in cells &mdash; by blocking CD38, more NAD+ remains available for sirtuins and mitochondrial function; (3) inhibits <strong>aromatase (CYP19A1)</strong>, reducing conversion of testosterone to estradiol.
+            <div class="target-tags">
+              <span class="target-tag">GABA-A (benzodiazepine site)</span>
+              <span class="target-tag">CD38 / NAD+ preservation</span>
+              <span class="target-tag">Aromatase (CYP19A1)</span>
+            </div>
+          </div>
+          <span class="dosage">Dose: 50 mg before bed</span>
+          <br><strong>Brand:</strong> Swanson Vitamins Apigenin 50mg (90 capsules &mdash; 3-month supply). Solid budget choice with correct dosing. <span class="shop-links"><a href="https://ch.iherb.com/pr/swanson-vitamins-apigenin-50-mg-90-capsules/135804" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF13.08</a></span>
+          <div class="timing-tag"><span class="badge badge-evening">Before bed</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <div class="card-header">
+          <span class="card-title">3. Tongkat Ali (Eurycoma longifolia)</span>
+          <span class="badge badge-new">Priority: Medium &mdash; &#10003; PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Eurycoma_Longifolia_Tongkat_Ali.jpg/320px-Eurycoma_Longifolia_Tongkat_Ali.jpg" alt="Tongkat Ali (Eurycoma longifolia) plant" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> One of the few testosterone-supporting herbs with genuine human RCT evidence:
+          <ul>
+            <li>Multiple RCTs showing improved testosterone, reduced cortisol, better body composition</li>
+            <li>Stress reduction via HPA axis modulation (complements Ashwagandha but through different pathways)</li>
+            <li>No known interaction with your current stack</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Active compound <strong>eurycomanone</strong> (a quassinoid) acts through multiple pathways: (1) stimulates <strong>Leydig cells</strong> in the testes to increase testosterone production via LH signaling; (2) reduces <strong>SHBG</strong> (sex hormone-binding globulin), freeing bound testosterone into its bioactive form; (3) modulates the HPA axis to reduce cortisol &mdash; via a different mechanism than Ashwagandha (eurycomanone acts more on CYP17 enzyme regulation rather than GABA mimicry). Also shows anti-estrogenic activity by reducing aromatization.
+            <div class="target-tags">
+              <span class="target-tag">Leydig cells / LH</span>
+              <span class="target-tag">SHBG reduction</span>
+              <span class="target-tag">HPA axis / Cortisol</span>
+              <span class="target-tag">CYP17 regulation</span>
+            </div>
+          </div>
+          <span class="dosage">Dose: 200-400 mg standardized extract</span>
+          <br><strong>Brand:</strong> Nutricost Tongkat Ali (60 capsules, available on iHerb CH).
+          <span class="shop-links"><a href="https://ch.iherb.com/pr/nutricost-tongkat-ali-60-capsules/107427" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF7.64</a> <a href="https://nootropicsdepot.com/tongkat-ali-extract-tablets-10-eurycomanone/" class="shop-link" target="_blank" rel="noopener">&#128722; Nootropics Depot (upgrade)</a></span>
+          <br><strong>Cycling:</strong> 5 days on / 2 days off, or follow the Ashwagandha cycle (use Tongkat during Ashwagandha OFF weeks as a swap).
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <div class="card-header">
+          <span class="card-title">4. NAD+ Cell Regenerator (Nicotinamide Riboside)</span>
+          <span class="badge badge-new">Priority: Medium-High &mdash; &#10003; PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=140&h=140&fit=crop&crop=center" alt="DNA double helix — NR supports DNA repair via NAD+" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> NAD+ precursor via Nicotinamide Riboside (NIAGEN). NAD+ declines ~50% between ages 20-50, affecting mitochondrial function, DNA repair, and cellular energy:
+          <ul>
+            <li>Restored energy levels, improved exercise recovery</li>
+            <li>Synergizes with Apigenin (Apigenin preserves NAD+, NR produces it)</li>
+            <li>300 mg NIAGEN clinically shown to raise blood NAD+ by 40-90%</li>
+            <li>NR has more published human RCTs than NMN and is freely available in EU (no Novel Food restriction)</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Nicotinamide Riboside (NR) is converted to <strong>NMN</strong> by <strong>NRK enzymes</strong> (nicotinamide riboside kinases), then NMN is converted to <strong>NAD+</strong> by NMNAT enzymes. NAD+ is the critical coenzyme for: (1) <strong>Sirtuins (SIRT1-7)</strong> &mdash; deacetylases that regulate DNA repair, mitochondrial biogenesis, and epigenetic maintenance; (2) <strong>Mitochondrial Complex I</strong> &mdash; the first step of oxidative phosphorylation (ATP production); (3) <strong>PARPs</strong> &mdash; DNA repair enzymes. Formula also includes trace resveratrol, quercetin, and fisetin (at sub-therapeutic doses &mdash; treat as bonus, not primary actives).
+            <div class="target-tags">
+              <span class="target-tag">NAD+ / NRK &rarr; NMNAT</span>
+              <span class="target-tag">Sirtuins (SIRT1-7)</span>
+              <span class="target-tag">Mitochondrial Complex I</span>
+              <span class="target-tag">PARP DNA repair</span>
+            </div>
+          </div>
+          <span class="dosage">Dose: 1 capsule/day (300 mg NIAGEN NR) &middot; Morning with meal</span>
+          <br><strong>Brand:</strong> Life Extension NAD+ Cell Regenerator &amp; Resveratrol Elite (NIAGEN&reg; patented NR, ChromaDex-tested, 30+ human studies behind this form).
+          <br><strong>Why NR over NMN:</strong> NR (NIAGEN) is one step upstream from NMN in the NAD+ pathway but has equivalent NAD+-raising efficacy in human trials. Key advantage: readily available on iHerb Switzerland with no EU Novel Food restrictions.
+          <span class="shop-links"><a href="https://ch.iherb.com/pr/life-extension-nad-cell-regenerator-and-resveratrol-elite-30-vegetarian-capsules/105828" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF40.50</a></span>
+          <br><strong>Note:</strong> If budget-constrained, Apigenin alone (item 2) provides a "poor man's NAD+ boost" via CD38 inhibition.
+          <div class="timing-tag"><span class="badge badge-morning">Morning</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="color: var(--cyan); margin: 2rem 0 1rem; font-size: 1.15rem;">Second-Pass Additions &mdash; Health, Brain &amp; Muscle Focus</h3>
+
+    <div class="callout callout-info" style="margin-bottom:1rem;">
+      <div class="callout-title">Second review &mdash; What was missed</div>
+      <div class="callout-body">After a deeper dive focused specifically on <strong>health/longevity, brain performance, and muscular growth</strong>, these are the compounds that should have been in the first pass. Ordered by strength of evidence and relevance to your goals.</div>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">6. GlyNAC (Glycine + N-Acetylcysteine)</span>
+          <span class="badge badge-new">Priority: HIGH &mdash; &#10003; NAC PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=140&h=140&fit=crop&crop=center" alt="Bone broth — rich in glycine, a GlyNAC precursor" class="card-img" onerror="this.style.display='none'">
+          <strong>Why this is arguably the biggest miss from round 1:</strong> GlyNAC has some of the strongest human clinical trial evidence of <em>any</em> longevity intervention studied to date.
+          <ul>
+            <li><strong>RCT evidence (2022-2024):</strong> Multiple published randomized controlled trials in older adults. 16-24 week supplementation reversed <strong>seven aging hallmarks simultaneously:</strong> glutathione deficiency, oxidative stress, mitochondrial dysfunction, inflammation, insulin resistance, endothelial dysfunction, and genomic damage</li>
+            <li><strong>Brain:</strong> A 2024 pilot trial identified a "brain glucose steal" phenomenon &mdash; when mitochondria are impaired, non-brain organs consume glucose intended for the brain. GlyNAC reversed this, <strong>directly improving cognitive decline</strong></li>
+            <li><strong>Muscle:</strong> Significant improvements in muscle strength and gait speed in older adults</li>
+            <li><strong>Mechanism:</strong> Glycine + NAC are the rate-limiting precursors for glutathione (GSH), your body's master antioxidant. GSH production declines with age; GlyNAC restores it to youthful levels</li>
+            <li><strong>Reversibility:</strong> When supplementation was stopped for 12 weeks, all defects returned &mdash; confirming the supplement was the cause of improvement</li>
+          </ul>
+          <span class="dosage">Dose: Glycine 1.33 mmol/kg/day + NAC 0.81 mmol/kg/day (roughly 3-4g Glycine + 2-3g NAC daily). Can be split AM/PM.</span>
+          <br><strong>Brand:</strong> NAC: Life Extension 600mg (x2 bottles purchased). Glycine: still needed &mdash; NOW Foods or Nutricost bulk powder. <span class="shop-links"><a href="https://ch.iherb.com/pr/life-extension-n-acetyl-l-cysteine-600-mg-60-capsules/47340" class="shop-link" target="_blank" rel="noopener">&#128722; NAC (purchased) &mdash; CHF20.40</a> <a href="https://www.iherb.com/pr/now-foods-glycine-1-000-mg-100-veg-capsules/18106" class="shop-link" target="_blank" rel="noopener">&#128722; Glycine (still needed)</a></span>
+          <br><strong>Note:</strong> Glycine also improves sleep quality when taken before bed (3g). Can split dose: NAC in morning, Glycine in evening.
+          <div class="timing-tag"><span class="badge badge-morning">Morning (NAC)</span> <span class="badge badge-evening">Evening (Glycine)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">7. CoQ10 (Ubiquinol form)</span>
+          <span class="badge badge-new">Priority: HIGH &mdash; &#10003; PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1615937691194-97dbd3f3dc29?w=140&h=140&fit=crop&crop=center" alt="Heart — CoQ10 is critical for cardiac muscle energy" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> CoQ10 is the essential electron carrier in mitochondrial energy production (Complex III). Endogenous production declines starting around age 25-30, and statins deplete it further.
+          <ul>
+            <li><strong>Mitochondrial energy:</strong> Directly supports ATP production in every cell. Complements your Creatine (Creatine recycles ATP, CoQ10 helps produce it)</li>
+            <li><strong>Heart:</strong> Strong clinical evidence for cardiovascular protection. The Q-SYMBIO trial showed reduced cardiovascular death in heart failure patients</li>
+            <li><strong>Brain:</strong> 2025 research shows CoQ10 reduces neuroinflammation and restores energy metabolism genes in the brain</li>
+            <li><strong>Exercise:</strong> Reduced oxidative damage during training, improved recovery</li>
+            <li><strong>Form matters:</strong> <strong>Ubiquinol</strong> (reduced form) is 3-8x more bioavailable than Ubiquinone (oxidized form). Don't waste money on cheap ubiquinone</li>
+          </ul>
+          <span class="dosage">Dose: 100-200 mg Ubiquinol daily</span>
+          <br><strong>Brand:</strong> Life Extension Super Ubiquinol CoQ10 with Enhanced Mitochondrial Support, 100mg (Kaneka Ubiquinol patent). <span class="shop-links"><a href="https://ch.iherb.com/pr/life-extension-super-ubiquinol-coq10-with-enhanced-mitochondrial-support-100-mg-60-softgels/22327" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH (60ct) &mdash; CHF40.15</a> <a href="https://ch.iherb.com/pr/life-extension-super-ubiquinol-coq10-with-enhanced-mitochondrial-support-100-mg-30-softgels/22326" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH (30ct) &mdash; CHF21.67</a></span>
+          <div class="timing-tag"><span class="badge badge-lunch">With lunch (fat-soluble)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--green);">
+        <div class="card-header">
+          <span class="card-title">8. Sulforaphane (Broccoli Sprout Extract)</span>
+          <span class="badge badge-new">Priority: MEDIUM-HIGH</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=140&h=140&fit=crop&crop=center" alt="Broccoli — sulforaphane source, especially from sprouts" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> The most potent natural activator of the Nrf2 pathway &mdash; your body's master regulator of antioxidant defense and detoxification. 84 clinical trials conducted to date.
+          <ul>
+            <li><strong>Nrf2 activation:</strong> Upregulates hundreds of protective genes (SOD, catalase, glutathione peroxidase, phase II detox enzymes)</li>
+            <li><strong>Brain:</strong> 2025 research shows potent anti-Alzheimer's activity and neuroprotection. Crosses the BBB</li>
+            <li><strong>Muscle:</strong> Preclinical evidence for treating mitochondrial myopathies. Repairs muscle mitochondrial dysfunction through multiple pathways</li>
+            <li><strong>Exercise synergy:</strong> A 2025 human trial in older adults showed sulforaphane <strong>amplified exercise-induced Nrf2 activation by 2.1x</strong> vs. 1.5x for exercise alone. Directly relevant for your training</li>
+            <li><strong>Detoxification:</strong> Enhances Phase II liver detox &mdash; helpful given you're running a multi-compound stack</li>
+          </ul>
+          <span class="dosage">Dose: 10-30 mg sulforaphane (or ~100 mg broccoli sprout extract standardized to 10% SFN)</span>
+          <br><strong>Brand:</strong> Avmacol (clinical-grade, myrosinase-enhanced), Prostaphane (European), or Jarrow BroccoMax. <span class="shop-links"><a href="https://www.iherb.com/pr/jarrow-formulas-broccomax-myrosinase-activated-sgs-60-delayed-release-veggie-caps/4297" class="shop-link" target="_blank" rel="noopener">&#128722; BroccoMax</a></span>
+          <br><strong>Tip:</strong> Look for products containing <strong>myrosinase enzyme</strong> (or take with mustard seed powder) &mdash; without it, glucoraphanin-to-sulforaphane conversion is poor.
+          <div class="timing-tag"><span class="badge badge-morning">Morning (empty stomach for best absorption)</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--accent);">
+        <div class="card-header">
+          <span class="card-title">9. Boron</span>
+          <span class="badge badge-new">Priority: MEDIUM &mdash; &#10003; PURCHASED</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=140&h=140&fit=crop&crop=center" alt="Avocado — one of the richest dietary sources of boron" class="card-img" onerror="this.style.display='none'">
+          <strong>Why add:</strong> Cheap trace mineral with outsized hormonal impact. Often overlooked because it's unglamorous.
+          <ul>
+            <li><strong>Free testosterone:</strong> Reduces SHBG (sex hormone-binding globulin), freeing up bound testosterone. One study: +28.3% free testosterone in 1 week</li>
+            <li><strong>Estradiol:</strong> Shifts estradiol metabolism toward less potent metabolites. Study showed -39% estradiol</li>
+            <li><strong>Bone health:</strong> Improves calcium and magnesium metabolism</li>
+            <li><strong>Inflammation:</strong> Reduces CRP and TNF-alpha markers</li>
+            <li><strong>Synergy:</strong> Amplifies the effects of Tongkat Ali and Ashwagandha on testosterone</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            Boron modulates <strong>SHBG</strong> binding affinity, reducing the globulin's grip on testosterone and allowing more to circulate in the free (bioactive) form. It also influences <strong>estrogen metabolism</strong> by shifting hydroxylation patterns toward 2-hydroxyestrone (a weaker metabolite) over 16-alpha-hydroxyestrone (stronger). For bone health: boron is required for the hydroxylation step that converts 25(OH)D to active 1,25(OH)₂D, and it regulates calcium/magnesium retention in kidneys. Anti-inflammatory effects come via inhibition of <strong>NF-kB</strong> and reduction of inflammatory cytokines (CRP, TNF-alpha, IL-6).
+            <div class="target-tags">
+              <span class="target-tag">SHBG binding affinity</span>
+              <span class="target-tag">Estrogen hydroxylation</span>
+              <span class="target-tag">Vitamin D activation</span>
+              <span class="target-tag">NF-kB / Inflammation</span>
+            </div>
+          </div>
+          <span class="dosage">Dose: 6-10 mg daily (start at 6mg)</span>
+          <br><strong>Brand:</strong> Source Naturals Triple Boron, 3mg (200 capsules &mdash; ~6 months supply at 2 caps/day). <span class="shop-links"><a href="https://ch.iherb.com/pr/source-naturals-triple-boron-3-mg-200-capsules/7273" class="shop-link" target="_blank" rel="noopener">&#128722; iHerb CH &mdash; CHF10.61</a></span>
+          <br><strong>Caution:</strong> Stay under 20 mg/day. Higher doses show reproductive toxicity in animal studies.
+          <div class="timing-tag"><span class="badge badge-morning">Morning (with food)</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 id="excluded" style="color: var(--red); margin: 2rem 0 1rem; font-size: 1.15rem;">Compounds Reviewed &amp; Excluded</h3>
+
+    <div class="callout callout-warning" style="margin-bottom:1rem;">
+      <div class="callout-title">Honest Assessment &mdash; What NOT to Take</div>
+      <div class="callout-body">These compounds are frequently recommended in biohacking circles but fail scrutiny for different reasons. Including them here so you don't waste time or money.</div>
+    </div>
+
+    <div class="card-grid">
+
+      <div class="card" style="border-left: 3px solid var(--red);">
+        <div class="card-header">
+          <span class="card-title">Taurine (for longevity)</span>
+          <span class="badge badge-replace">Skip</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1646533683264-f045aeedde16?w=140&h=140&fit=crop&crop=center" alt="Red Bull energy drink cans — taurine was popularized through energy drinks, but the science is contested" class="card-img" onerror="this.style.display='none'" style="filter: grayscale(60%) opacity(0.7);">
+          <strong>Why skip:</strong> The 2023 Science paper (Singh et al.) claiming taurine deficiency drives aging generated massive hype. However, a <strong>2025 Science paper (Fernandez et al.)</strong> using longitudinal data from the Baltimore Longitudinal Study of Aging directly contradicts the core premise:
+          <ul>
+            <li>Taurine levels actually <strong>increase or remain stable</strong> with age in healthy humans, primates, and mice</li>
+            <li>No clear association between taurine levels and health measures like muscle strength</li>
+            <li>Gerontologist Rafael de Cabo: "no need for taurine supplementation as long as you have a healthy diet"</li>
+          </ul>
+          <strong>Verdict:</strong> If you eat meat/fish regularly, you're likely getting enough. The longevity thesis is now contested at the foundational level. Not worth the pill count.
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--red);">
+        <div class="card-header">
+          <span class="card-title">Fadogia Agrestis</span>
+          <span class="badge badge-replace">Skip</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1566792505656-e82d93abac30?w=140&h=140&fit=crop&crop=center" alt="Herbal plant leaves — Fadogia agrestis is a small African shrub with insufficient evidence" class="card-img" onerror="this.style.display='none'" style="filter: grayscale(60%) opacity(0.7);">
+          <strong>Why skip:</strong> Popularized as a Tongkat Ali companion for testosterone, but the evidence doesn't hold up:
+          <ul>
+            <li>Almost entirely animal studies. Zero human RCTs published</li>
+            <li>Animal studies show <strong>dose-dependent testicular toxicity</strong> &mdash; the exact opposite of what you want</li>
+            <li>No standardization of active compounds across products</li>
+            <li>The risk/reward ratio is poor when Tongkat Ali + Boron + Ashwagandha already cover testosterone support with actual human evidence</li>
+          </ul>
+          <strong>Verdict:</strong> Hard skip. Tongkat Ali is the evidence-backed testosterone herb; Fadogia is the hype-backed one.
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--red);">
+        <div class="card-header">
+          <span class="card-title">Dihexa (peptide)</span>
+          <span class="badge badge-replace">Skip</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=140&h=140&fit=crop&crop=center" alt="Laboratory — Dihexa's foundational research was retracted" class="card-img" onerror="this.style.display='none'" style="filter: grayscale(60%) opacity(0.7);">
+          <strong>Why skip:</strong> Was widely promoted as "seven orders of magnitude more potent than BDNF" for cognitive enhancement. However:
+          <ul>
+            <li>The foundational 2012 paper was <strong>retracted in April 2025</strong> after a data-fabrication investigation. The core potency claim is now unsupported</li>
+            <li>Dihexa activates HGF/c-Met, which is an <strong>oncogenic signaling pathway</strong> &mdash; long-term activation raises serious tumor-promotion concerns</li>
+            <li>Zero human trials, zero safety data</li>
+          </ul>
+          <strong>Verdict:</strong> Disqualified. The science it was built on was fabricated. Semax and Cerebrolysin are safer cognitive peptide alternatives.
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--red);">
+        <div class="card-header">
+          <span class="card-title">Standalone Zinc</span>
+          <span class="badge badge-replace">Removed</span>
+        </div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1518022198544-e2f3ae7668f8?w=140&h=140&fit=crop&crop=center" alt="Oysters — richest dietary source of zinc" class="card-img" onerror="this.style.display='none'" style="filter: grayscale(60%) opacity(0.7);">
+          <strong>Why removed:</strong> Your Life Extension Two-Per-Day already delivers <strong>25 mg Zinc as OptiZinc (Zinc Monomethionine)</strong> &mdash; one of the most bioavailable forms &mdash; plus 2 mg Copper for mineral balance. This sits in the optimal 15&ndash;30 mg/day range.
+          <ul>
+            <li>The tolerable upper limit for zinc is <strong>40 mg/day</strong>. Life Extension's standalone Zinc Caps contain 50 mg &mdash; adding them would put you at <strong>75 mg/day</strong>, nearly double the UL</li>
+            <li>Chronic zinc excess <strong>depletes copper</strong>, causing anemia, neutropenia, and paradoxically weakened immunity</li>
+            <li>The multi already includes 2 mg copper to balance the 25 mg zinc &mdash; adding standalone zinc <strong>breaks this ratio</strong></li>
+            <li>Only justified if bloodwork shows deficiency despite the multi (unlikely), or temporarily during acute illness</li>
+          </ul>
+          <strong>Verdict:</strong> Not needed. The 25 mg OptiZinc via your multivitamin is the correct dose. More zinc is actively harmful, not beneficial.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────── PEPTIDES ─────────────── -->
+  <section id="peptides">
+    <div class="section-title">
+      <span class="icon">🧬</span> Peptide Candidates &mdash; Evidence-Based Selection
+    </div>
+
+    <div class="callout callout-warning">
+      <div class="callout-title">Important Disclaimer on Peptides</div>
+      <div class="callout-body">
+        <strong>Regulatory status:</strong> None of the peptides below are FDA/EMA-approved for the listed indications. Most have strong preclinical (animal) evidence but limited controlled human trials. They exist in a legal gray area in most countries.<br><br>
+        <strong>Source quality is everything.</strong> Unlike supplements, peptides require pharmaceutical-grade sourcing. Only purchase from vendors that provide third-party CoA (Certificate of Analysis) with HPLC purity data (>98%). Contaminated or underdosed peptides are the norm in this market, not the exception.<br><br>
+        <strong>Delivery:</strong> Most peptides below require subcutaneous injection or intranasal administration. Oral peptides are largely destroyed by GI enzymes (with the notable exception of BPC-157, which has some oral bioavailability for gut-specific effects).
+      </div>
+    </div>
+
+    <div style="margin: 1.2rem 0; padding: 0.9rem; background: rgba(139,233,253,0.05); border: 1px solid rgba(139,233,253,0.2); border-radius: 8px;">
+      <strong style="color: var(--cyan); font-size: 0.9rem;">&#129514; Peptide Starter Kit &mdash; What You Need</strong>
+      <div style="font-size: 0.78rem; color: var(--text); margin-top: 0.5rem; line-height: 1.5;">
+        <strong>From your peptide supplier:</strong> Bacteriostatic water (BAC water) — <a href="https://peptidos.eu/products/bac-water" class="shop-link" target="_blank" rel="noopener" style="display:inline;">&#128722; Peptidos.eu €12</a><br>
+        <strong>From any pharmacy (no prescription):</strong><br>
+        &bull; Insulin syringes 29-31G, 0.5-1 mL (for subcutaneous injection)<br>
+        &bull; Alcohol swabs (70% isopropyl)<br>
+        &bull; Sharps disposal container<br><br>
+        <strong>Legal status (EU):</strong> BPC-157, TB-500, and GHK-Cu are legal to purchase in EU member states as research chemicals. No prescription required. Not classified as controlled substances. All suppliers label "for research purposes only."<br><br>
+        <strong>Recommended single-source order (Peptidos.eu):</strong><br>
+        2x BPC-157 5mg (~€60) + 2x TB-500 5mg (~€80) + 1x GHK-Cu 50mg (~€44) + 2x BAC Water (~€24) = <strong>~€208 total</strong> (free EU shipping). Covers a full 4-6 week BPC+TB stack + GHK-Cu cycle.
+      </div>
+    </div>
+
+    <h3 style="color: var(--green); margin: 1.5rem 0 1rem; font-size: 1.1rem;">Tier 1 &mdash; Strongest Evidence, Most Practical</h3>
+
+    <div class="card-grid">
+
+      <div class="card peptide-card tier-1">
+        <div class="card-header">
+          <span class="card-title">BPC-157</span>
+          <span class="badge badge-tier1">Tier 1</span>
+        </div>
+        <div class="card-meta">Body Protection Compound-157 &middot; 15 amino acids &middot; Gastric pentadecapeptide</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=140&h=140&fit=crop&crop=center" alt="Gut/digestive system — BPC-157 is a gastric peptide" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Tissue repair accelerator. Promotes angiogenesis, upregulates growth factors (VEGF, FGF), reduces inflammation, and protects/heals gut lining.
+          <ul>
+            <li><strong>Recovery:</strong> Tendons, ligaments, muscles, bones, skin</li>
+            <li><strong>Gut:</strong> Heals intestinal damage, reduces inflammation (IBD/IBS-relevant)</li>
+            <li><strong>Neuroprotective:</strong> Some evidence for dopaminergic system protection</li>
+          </ul>
+          <strong>Evidence:</strong> 100+ animal studies. Limited human data (fewer than 15 subjects total across published studies), but the preclinical signal is exceptionally consistent.
+          <span class="dosage">Typical protocol: 250-500 mcg/day subQ, or 500 mcg oral (for gut-specific effects). 4-6 week cycles.</span>
+          <div class="evidence-bar">
+            <span>Preclinical evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Injury recovery, joint health, gut healing. If you have any nagging tendon/joint issues, this is the first peptide to consider. Often stacked with TB-500.</div>
+          <div style="margin-top: 0.8rem; padding: 0.7rem; background: rgba(57,210,192,0.06); border: 1px solid rgba(57,210,192,0.15); border-radius: 6px;">
+            <strong style="color: var(--cyan); font-size: 0.8rem;">&#128230; EU SOURCING</strong><br>
+            <span class="shop-links" style="margin-top: 0.4rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+              <a href="https://peptidos.eu/products/bpc-157" class="shop-link" target="_blank" rel="noopener">&#128722; Peptidos.eu (DK) &mdash; €34/5mg</a>
+              <a href="https://heluslab.com/peptides/bpc-157-10mg/" class="shop-link" target="_blank" rel="noopener">&#128722; Helus Lab &mdash; €30/10mg</a>
+              <a href="https://www.peptidelimited.com/product/bpc-157-5mg" class="shop-link" target="_blank" rel="noopener">&#128722; Peptide Limited &mdash; €32/5mg</a>
+            </span>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+              <strong>Protocol:</strong> Reconstitute 5mg vial with 2mL BAC water → 2,500 mcg/mL. Dose: 250-500 mcg subQ 1-2x/day (= 10-20 units on insulin syringe). 4-6 week cycle, 2-4 weeks off.<br>
+              <strong>Storage:</strong> Powder at -20°C; reconstituted at 2-8°C, use within 4 weeks.<br>
+              <strong>Top pick:</strong> Peptidos.eu — #1 ranked EU vendor (Pepsider 2026), same-day dispatch, CoA pre-purchase, free shipping >€100.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-1">
+        <div class="card-header">
+          <span class="card-title">TB-500 (Thymosin Beta-4 Fragment)</span>
+          <span class="badge badge-tier1">Tier 1</span>
+        </div>
+        <div class="card-meta">Synthetic fragment of Thymosin Beta-4 &middot; 43 amino acids</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=140&h=140&fit=crop&crop=center" alt="Tissue healing — TB-500 promotes wound repair and cell migration" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Systemic tissue repair through actin sequestration, cell migration promotion, and angiogenesis.
+          <ul>
+            <li><strong>Wound healing:</strong> Parent compound (TB4) showed accelerated healing in Phase 2 trial &mdash; chronic ulcers healed ~1 month faster than placebo</li>
+            <li><strong>Anti-inflammatory:</strong> Reduces systemic inflammation markers</li>
+            <li><strong>Cardiac:</strong> Preclinical evidence for cardiac tissue protection post-injury</li>
+          </ul>
+          <strong>Evidence:</strong> Full-length TB4 has Phase 2 human trial data. TB-500 fragment specifically has strong preclinical support but no fragment-specific human RCTs.
+          <span class="dosage">Typical protocol: 2-5 mg 2x/week subQ for 4-6 weeks (loading), then 2 mg/week maintenance.</span>
+          <div class="evidence-bar">
+            <span>Preclinical evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Systemic recovery, post-injury healing. The <strong>BPC-157 + TB-500 stack</strong> is considered the gold standard healing protocol in the peptide community &mdash; they work through complementary mechanisms.</div>
+          <div style="margin-top: 0.8rem; padding: 0.7rem; background: rgba(57,210,192,0.06); border: 1px solid rgba(57,210,192,0.15); border-radius: 6px;">
+            <strong style="color: var(--cyan); font-size: 0.8rem;">&#128230; EU SOURCING</strong><br>
+            <span class="shop-links" style="margin-top: 0.4rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+              <a href="https://peptidos.eu/products/tb-500" class="shop-link" target="_blank" rel="noopener">&#128722; Peptidos.eu (DK) &mdash; ~€40/5mg</a>
+              <a href="https://cellpeptides.com/product/buy-tb-500-5mg/" class="shop-link" target="_blank" rel="noopener">&#128722; CellPeptides &mdash; €36/5mg</a>
+              <a href="https://peptidesdirect.io/products/tb-500" class="shop-link" target="_blank" rel="noopener">&#128722; PeptidesDirect &mdash; €42/10mg</a>
+            </span>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+              <strong>Protocol:</strong> Reconstitute 5mg vial with 1mL BAC water → 5 mg/mL. <em>Loading (4-6 wk):</em> 2-2.5mg subQ, 2-3x/week. <em>Maintenance (4-8 wk):</em> 750mcg-2mg, 1-2x/week. Total cycle: 8-14 weeks, then 4+ weeks off.<br>
+              <strong>Note:</strong> Systemically active — inject anywhere (abdomen, thigh, upper arm); does NOT need to be near injury site.<br>
+              <strong>Storage:</strong> Powder at -20°C; reconstituted at 2-8°C, use within 2-4 weeks.<br>
+              <strong>Top pick:</strong> Peptidos.eu — consolidate order with BPC-157 for free shipping.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-1">
+        <div class="card-header">
+          <span class="card-title">GHK-Cu (Copper Tripeptide)</span>
+          <span class="badge badge-tier1">Tier 1</span>
+        </div>
+        <div class="card-meta">Glycyl-L-Histidyl-L-Lysine:Copper(II) &middot; 3 amino acids + copper</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=140&h=140&fit=crop&crop=center" alt="Skin collagen — GHK-Cu stimulates collagen and elastin synthesis" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Anti-aging peptide with the <strong>cleanest human evidence base</strong> of any peptide on this list. Naturally occurs in human plasma but declines with age.
+          <ul>
+            <li><strong>Skin:</strong> Stimulates collagen synthesis, elastin, glycosaminoglycans. Decades of dermatology data</li>
+            <li><strong>Wound healing:</strong> Multiple human studies showing accelerated recovery</li>
+            <li><strong>Gene expression:</strong> Upregulates ~32% of human genes in a reparative direction and downregulates genes associated with disease</li>
+            <li><strong>Anti-inflammatory:</strong> Reduces oxidative damage markers</li>
+          </ul>
+          <span class="dosage">Topical: 1-2% cream (skin). SubQ: 1-2 mg/day for systemic effects. Can do both.</span>
+          <div class="evidence-bar">
+            <span>Preclinical evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human evidence:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Anti-aging, skin quality, general tissue repair. Lowest barrier to entry &mdash; topical application is non-invasive and well-studied. The "safest bet" peptide.</div>
+          <div style="margin-top: 0.8rem; padding: 0.7rem; background: rgba(57,210,192,0.06); border: 1px solid rgba(57,210,192,0.15); border-radius: 6px;">
+            <strong style="color: var(--cyan); font-size: 0.8rem;">&#128230; EU SOURCING</strong><br>
+            <span class="shop-links" style="margin-top: 0.4rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+              <a href="https://peptidos.eu/products/ghk-cu" class="shop-link" target="_blank" rel="noopener">&#128722; Peptidos.eu (DK) &mdash; €44/50mg</a>
+              <a href="https://europeanbiolabs.com/product/ghk-cu/" class="shop-link" target="_blank" rel="noopener">&#128722; European BioLabs &mdash; €42/100mg</a>
+              <a href="https://syncom-europe.com/products/ghk" class="shop-link" target="_blank" rel="noopener">&#128722; Syncom Store &mdash; €59/50mg</a>
+            </span>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4;">
+              <strong>Injectable protocol:</strong> 1-2mg subQ daily (or 2-3x/week), 4-8 week cycle, 2-4 weeks off. Reconstitute with BAC water; use within 2 weeks.<br>
+              <strong>Topical protocol:</strong> 1-2% serum, 2x daily on clean skin. Results at 8-12 weeks. Non-invasive entry point.<br>
+              <strong>Storage:</strong> Powder at -20°C; reconstituted at 2-8°C.<br>
+              <strong>Best value:</strong> European BioLabs — €42 for 100mg (double quantity vs others at similar price). Bulk discounts available (15% off 5+ vials).
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="color: var(--yellow); margin: 1.5rem 0 1rem; font-size: 1.1rem;">Tier 2 &mdash; Good Evidence, Specific Use Cases</h3>
+
+    <div class="card-grid">
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">Semax</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">ACTH(4-10) analog &middot; 7 amino acids &middot; Intranasal</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=140&h=140&fit=crop&crop=center" alt="Brain neural network — Semax upregulates BDNF and NGF" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Nootropic peptide approved in Russia for stroke recovery and cognitive disorders:
+          <ul>
+            <li><strong>BDNF upregulation:</strong> Primary mechanism. Increases brain-derived neurotrophic factor, facilitating synaptic plasticity and neurogenesis</li>
+            <li><strong>NGF stimulation:</strong> Similar to Lion's Mane but through melanocortin receptor pathways</li>
+            <li><strong>Neuroprotection:</strong> Used clinically in Russia for post-stroke cognitive recovery</li>
+          </ul>
+          <span class="dosage">Typical: 200-600 mcg/day intranasal. Cycles of 10-20 days with equal breaks.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Cognitive enhancement, learning, focus. Interesting synergy with your Lion's Mane (both stimulate NGF via different pathways). Intranasal = non-invasive. The stronger variant <strong>N-Acetyl Semax Amidate (NASA)</strong> has enhanced BBB penetration.</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">Selank</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Tuftsin analog &middot; 7 amino acids &middot; Intranasal</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=140&h=140&fit=crop&crop=center" alt="Calm mind — Selank modulates GABA for anxiolytic clarity" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Anxiolytic nootropic approved in Russia for generalized anxiety:
+          <ul>
+            <li><strong>GABA modulation:</strong> Allosteric GABA-A enhancer (similar to benzodiazepines but without sedation or dependence)</li>
+            <li><strong>Enkephalinase inhibition:</strong> Preserves endogenous opioid peptides, elevating mood naturally</li>
+            <li><strong>BDNF upregulation:</strong> Cognitive benefits alongside anxiolytic effects</li>
+            <li><strong>HPA axis normalization:</strong> Reduces cortisol without blunting it</li>
+          </ul>
+          <span class="dosage">Typical: 250-500 mcg/day intranasal. Cycles of 14-21 days.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Anxiety reduction with cognitive clarity. If stress/anxiety is a target, Selank is the peptide equivalent of your L-Theanine + Ashwagandha combo but more targeted. <strong>Semax + Selank</strong> can be stacked (different mechanisms).</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">Epithalon (Epitalon)</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Ala-Glu-Asp-Gly &middot; 4 amino acids &middot; Synthetic epithalamin</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1628595351029-c2bf17511435?w=140&h=140&fit=crop&crop=center" alt="DNA — Epithalon activates telomerase to maintain telomeres" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Telomerase activator based on decades of research by Prof. Vladimir Khavinson:
+          <ul>
+            <li><strong>Telomere maintenance:</strong> Activates telomerase in human somatic cells, potentially slowing cellular aging</li>
+            <li><strong>Pineal gland:</strong> May regulate melatonin production and circadian rhythm</li>
+            <li><strong>Longevity:</strong> Khavinson's long-term studies showed lifespan extension in animal models</li>
+          </ul>
+          <span class="dosage">Typical: 5-10 mg/day subQ for 10-20 days, 1-2x per year.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Pure longevity play. Short infrequent cycles (10-20 days per year) make it low-commitment. The science is intriguing but validation outside Russian research groups is limited.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="color: var(--yellow); margin: 1.5rem 0 1rem; font-size: 1.1rem;">Tier 2 &mdash; Muscle Growth Specific</h3>
+
+    <div class="card-grid">
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">MK-677 (Ibutamoren)</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Oral GH secretagogue (peptidomimetic) &middot; Non-peptide small molecule</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1532384748853-8f54a8f476e2?w=140&h=140&fit=crop&crop=center" alt="Muscle growth and sleep — MK-677 elevates GH and deepens sleep" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> The most-studied oral GH secretagogue. Mimics ghrelin at the GHS receptor to stimulate pulsatile GH release. <strong>Key advantage: oral dosing, no injections.</strong>
+          <ul>
+            <li><strong>GH elevation:</strong> 12-month human study showed ~97% increase in GH and ~55% increase in IGF-1</li>
+            <li><strong>Lean mass:</strong> Increased fat-free mass by 1.1 kg in the same trial (older adults)</li>
+            <li><strong>Sleep:</strong> Increases Stage 4 (deep) sleep duration by ~50% and REM by ~20% &mdash; directly relevant to recovery</li>
+            <li><strong>Bone density:</strong> Positive effects on bone mineral density over 12 months</li>
+          </ul>
+          <strong>Why Tier 2 (not 1):</strong> Significant side effects &mdash; increases appetite (ghrelin mimetic), can elevate fasting glucose and reduce insulin sensitivity with chronic use. Water retention is common. Requires metabolic monitoring.
+          <span class="dosage">Dose: 10-25 mg oral, once daily before bed. 8-12 week cycles with 4 weeks off. Start low (10mg).</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Muscular growth, recovery, sleep quality. <strong>The most practical GH-pathway compound</strong> because it's oral (no injections). For your muscle growth goal, this is the strongest evidence-backed peptide/peptidomimetic available. More human data than Ipamorelin+CJC-1295 combined. Monitor fasting glucose and appetite.</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">IGF-1 LR3</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Long-acting IGF-1 analog &middot; 83 amino acids &middot; Injectable</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=140&h=140&fit=crop&crop=center" alt="Muscle fibers — IGF-1 LR3 drives both hypertrophy and hyperplasia" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> A modified form of IGF-1 with a 13-amino-acid extension and an arginine substitution that gives it a much longer half-life (~20-30 hours vs. ~15 min for native IGF-1):
+          <ul>
+            <li><strong>Direct muscle growth:</strong> Activates PI3K/Akt/mTOR pathway independently of GH. Both hypertrophy AND hyperplasia (new muscle fiber creation, which GH alone cannot do)</li>
+            <li><strong>Satellite cell activation:</strong> Recruits muscle stem cells for repair and growth</li>
+            <li><strong>Recovery:</strong> Accelerates post-training recovery</li>
+          </ul>
+          <strong>Why Tier 2:</strong> Very limited human safety data. Theoretical risks include hypoglycemia (it lowers blood sugar acutely) and increased cell proliferation (cancer concern with chronic use). This is a more aggressive compound &mdash; not a first-line choice.
+          <span class="dosage">Typical: 20-50 mcg/day subQ, training days only. 4-week cycles max.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Targeted muscle hypertrophy + hyperplasia. Not a first-line compound &mdash; consider only after optimizing GH secretagogues and training. The proliferative risk profile means short cycles are essential.</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">Follistatin 344</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Myostatin inhibitor &middot; 344 amino acids &middot; Injectable</div>
+        <div class="card-body">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Belgian_Blue_Bull.jpg/320px-Belgian_Blue_Bull.jpg" alt="Belgian Blue cattle — myostatin-knockout phenotype that Follistatin mimics" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Fundamentally different mechanism from everything else here. Rather than promoting growth signals, it <strong>removes genetic brakes</strong> on muscle growth:
+          <ul>
+            <li><strong>Myostatin neutralization:</strong> Binds and neutralizes myostatin and activin A, the body's primary limiters of muscle mass</li>
+            <li><strong>Muscle mass:</strong> Animal models (myostatin knockout) show dramatic hypertrophy. The "Belgian Blue" cattle phenotype</li>
+            <li><strong>Gene therapy angle:</strong> Some researchers exploring Follistatin gene therapy for muscular dystrophy</li>
+          </ul>
+          <strong>Why Tier 2:</strong> The mechanism is real and dramatic in animal models. Human data is extremely limited. Sourcing pharmaceutical-grade Follistatin is difficult and expensive. Long-term safety is unknown &mdash; myostatin also has cardioprotective roles, so chronic suppression has theoretical cardiac risks.
+          <span class="dosage">Typical: 100 mcg/day subQ for 10-30 days. Cycling essential.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Maximum hypertrophy potential. The "nuclear option" for muscle growth via a completely unique mechanism. Fascinating science, but thin human evidence and expensive sourcing. Only for the very informed.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="color: var(--yellow); margin: 1.5rem 0 1rem; font-size: 1.1rem;">Tier 2 &mdash; Brain Performance Specific</h3>
+
+    <div class="card-grid">
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">Cerebrolysin</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Porcine brain-derived peptide mixture &middot; IV/IM &middot; Approved in 40+ countries</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=140&h=140&fit=crop&crop=center" alt="Brain — Cerebrolysin mimics BDNF, CNTF, and NGF simultaneously" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> A mixture of neurotrophic peptides derived from porcine brain tissue. <strong>The closest thing to a "clinical-grade" nootropic peptide</strong> &mdash; approved as a medicine (not just a research compound) in Russia, China, and most of Asia/Eastern Europe.
+          <ul>
+            <li><strong>Neurotrophic cocktail:</strong> Contains fragments that mimic BDNF, CNTF, and NGF activity simultaneously</li>
+            <li><strong>Clinical use:</strong> Prescribed for stroke recovery, traumatic brain injury, and dementia in 40+ countries</li>
+            <li><strong>Multiple RCTs:</strong> More human trial data than any other nootropic peptide. Results show improved cognitive scores in stroke patients and some dementia subtypes</li>
+            <li><strong>Neuroplasticity:</strong> Promotes synaptogenesis, dendritic branching, and neuroprotection against excitotoxicity</li>
+          </ul>
+          <strong>Limitations:</strong> A Cochrane review found mixed results, which limited Western regulatory adoption. Requires intramuscular injection (typically 5-10 mL). Not available in the US/EU as a prescribed medicine.
+          <span class="dosage">Typical: 5-10 mL IM, daily for 10-20 days. Cycles 2-4x per year.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Maximum cognitive support. Has the most human evidence of any nootropic peptide. Particularly relevant if you want to layer a peptide on top of your Lion's Mane + Semax stack for a multi-pathway neurotrophic approach. The IM injection route is the main barrier.</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-2">
+        <div class="card-header">
+          <span class="card-title">PE-22-28</span>
+          <span class="badge badge-tier2">Tier 2</span>
+        </div>
+        <div class="card-meta">Spadin-derived heptapeptide &middot; 7 amino acids &middot; Intranasal</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1614935151651-0bea6508db6b?w=140&h=140&fit=crop&crop=center" alt="Neurons — PE-22-28 induces rapid hippocampal neurogenesis" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> A synthetic peptide that blocks TREK-1 two-pore domain potassium channels, a novel and unique mechanism of action:
+          <ul>
+            <li><strong>Rapid neurogenesis:</strong> Induces hippocampal neurogenesis within 4 days in rodent models (faster than any SSRI)</li>
+            <li><strong>Serotonergic enhancement:</strong> Promotes serotonin neurotransmission without the blunting effect of SSRIs</li>
+            <li><strong>Antidepressant:</strong> Strong antidepressant-like effects in animal models</li>
+            <li><strong>Unique target:</strong> TREK-1 blockade is a completely different mechanism from Semax (BDNF) or Selank (GABA). Could theoretically stack without redundancy</li>
+          </ul>
+          <strong>Limitations:</strong> Entirely preclinical. No human safety or efficacy data. Systemic effects of TREK-1 blockade haven't been fully characterized.
+          <span class="dosage">Typical: 50-200 mcg/day intranasal. Short cycles (7-14 days).</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Best for:</strong> Neurogenesis, mood enhancement. The most interesting "next-gen" nootropic peptide because of its unique mechanism. <strong>Better safety profile than Dihexa</strong> (no oncogenic pathway concerns). But zero human data makes it experimental-tier. Intranasal delivery is at least non-invasive.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <h3 style="color: var(--purple); margin: 1.5rem 0 1rem; font-size: 1.1rem;">Tier 3 &mdash; Popular, Proceed with More Caution</h3>
+
+    <div class="card-grid">
+
+      <div class="card peptide-card tier-3">
+        <div class="card-header">
+          <span class="card-title">Ipamorelin + CJC-1295 (no DAC)</span>
+          <span class="badge badge-tier3">Tier 3</span>
+        </div>
+        <div class="card-meta">GH Secretagogue Stack &middot; Injectable</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=140&h=140&fit=crop&crop=center" alt="Physique — Ipa+CJC stimulates pulsatile GH release for body composition" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Stimulates natural Growth Hormone release through two complementary pathways (GHRH analog + GHS receptor agonist):
+          <ul>
+            <li><strong>Body composition:</strong> Increased lean mass, reduced fat</li>
+            <li><strong>Recovery:</strong> Faster exercise recovery, improved sleep quality</li>
+            <li><strong>Skin/hair:</strong> Improved collagen synthesis</li>
+          </ul>
+          <strong>Why Tier 3 (and below MK-677):</strong> Zero published studies on the combined protocol. Individual compounds have small RCTs. Requires subcutaneous injection daily AND medical supervision. MK-677 achieves comparable GH elevation <em>orally</em> with more human data. CJC-1295 <em>with</em> DAC was discontinued after a death in Phase 2 trials.
+          <span class="dosage">Typical: Ipamorelin 200-300 mcg + CJC-1295 100 mcg, subQ before bed, 5 days on / 2 off. 8-12 week cycles.</span>
+          <div class="evidence-bar">
+            <span>Preclinical:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+            </div>
+            <span>&nbsp;|&nbsp; Human:</span>
+            <div class="evidence-dots">
+              <div class="evidence-dot filled"></div>
+              <div class="evidence-dot half"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+              <div class="evidence-dot"></div>
+            </div>
+          </div>
+          <div class="verdict-box"><strong>Reassessed:</strong> Moved to Tier 3. For muscle growth specifically, MK-677 offers a better evidence/convenience ratio (oral, more human data). Ipa+CJC may have a slightly "cleaner" GH pulse profile with less appetite stimulation, but the injection requirement and lack of combined protocol data make it less practical. Only consider if MK-677's appetite/glucose side effects are intolerable.</div>
+        </div>
+      </div>
+
+      <div class="card peptide-card tier-3">
+        <div class="card-header">
+          <span class="card-title">MOTS-c</span>
+          <span class="badge badge-tier3">Tier 3</span>
+        </div>
+        <div class="card-meta">Mitochondria-derived peptide &middot; 16 amino acids</div>
+        <div class="card-body">
+          <img src="https://images.unsplash.com/photo-1576086213369-97a306d36557?w=140&h=140&fit=crop&crop=center" alt="Cellular energy — MOTS-c acts as a mitochondrial exercise mimetic" class="card-img" onerror="this.style.display='none'">
+          <strong>What it does:</strong> Endogenous mitochondria-derived peptide that acts as an "exercise mimetic":
+          <ul>
+            <li><strong>Metabolic regulation:</strong> Activates AMPK pathway (same as metformin/exercise)</li>
+            <li><strong>Insulin sensitivity:</strong> Improves glucose uptake and fatty acid oxidation</li>
+            <li><strong>Exercise capacity:</strong> Animal models show improved endurance and heat tolerance</li>
+          </ul>
+          <strong>Why Tier 3:</strong> Fascinating biology but almost entirely preclinical. Very few human datapoints. Expensive. <strong>Note:</strong> AMPK activation can theoretically blunt mTOR-driven hypertrophy if your primary goal is muscle mass. Timing around training would matter.
+          <span class="dosage">Typical: 5-10 mg subQ, 1-3x per week. 4-week cycles.</span>
+          <div class="verdict-box"><strong>Best for:</strong> Metabolic optimization, exercise enhancement. Interesting if metabolic health is a primary goal (synergizes with your ALA). But the evidence is still early-stage, and the AMPK/mTOR tradeoff needs consideration for hypertrophy goals.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Peptide decision matrix -->
+    <h3 style="color: var(--text); margin: 2rem 0 1rem; font-size: 1.1rem;">Quick Decision Matrix (Updated)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Goal</th>
+          <th>First Choice</th>
+          <th>Stack With</th>
+          <th>Route</th>
+          <th>Tier</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Muscle growth (practical)</strong></td>
+          <td style="color:var(--yellow);">MK-677</td>
+          <td>BPC-157 (for connective tissue support)</td>
+          <td>Oral</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td><strong>Muscle growth (aggressive)</strong></td>
+          <td style="color:var(--yellow);">IGF-1 LR3</td>
+          <td>MK-677 + Follistatin (different mechanisms)</td>
+          <td>SubQ</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td><strong>Brain performance</strong></td>
+          <td style="color:var(--yellow);">Semax (NASA variant)</td>
+          <td>Selank + Cerebrolysin</td>
+          <td>Intranasal + IM</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td>Injury recovery / joint health</td>
+          <td style="color:var(--green);">BPC-157</td>
+          <td>TB-500</td>
+          <td>SubQ (near injury site)</td>
+          <td><span class="badge badge-tier1">Tier 1</span></td>
+        </tr>
+        <tr>
+          <td>General tissue repair / anti-aging</td>
+          <td style="color:var(--green);">GHK-Cu</td>
+          <td>BPC-157</td>
+          <td>Topical + SubQ</td>
+          <td><span class="badge badge-tier1">Tier 1</span></td>
+        </tr>
+        <tr>
+          <td>Anxiety / stress (beyond supplements)</td>
+          <td style="color:var(--yellow);">Selank</td>
+          <td>Semax</td>
+          <td>Intranasal</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td>Pure longevity / telomere maintenance</td>
+          <td style="color:var(--yellow);">Epithalon</td>
+          <td>GHK-Cu</td>
+          <td>SubQ (short cycles)</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td>Neurogenesis (experimental)</td>
+          <td style="color:var(--yellow);">PE-22-28</td>
+          <td>Semax (complementary mechanisms)</td>
+          <td>Intranasal</td>
+          <td><span class="badge badge-tier2">Tier 2</span></td>
+        </tr>
+        <tr>
+          <td>GH (injectable route preferred)</td>
+          <td style="color:var(--purple);">Ipamorelin + CJC-1295</td>
+          <td>BPC-157</td>
+          <td>SubQ (requires monitoring)</td>
+          <td><span class="badge badge-tier3">Tier 3</span></td>
+        </tr>
+        <tr>
+          <td>Metabolic / exercise enhancement</td>
+          <td style="color:var(--purple);">MOTS-c</td>
+          <td>&mdash;</td>
+          <td>SubQ</td>
+          <td><span class="badge badge-tier3">Tier 3</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout callout-info" style="margin-top:1.5rem;">
+      <div class="callout-title">Recommended Peptide Entry Points (For Your 3 Goals)</div>
+      <div class="callout-body">
+        <strong>If picking 1 peptide for each goal:</strong><br>
+        <ul style="margin: 0.5rem 0 0 1rem;">
+          <li><strong>Health/Recovery:</strong> BPC-157 &mdash; best preclinical data, versatile (gut + joints + tissue), oral or subQ option</li>
+          <li><strong>Brain:</strong> Semax (N-Acetyl Semax Amidate) &mdash; intranasal, non-invasive, BDNF + NGF upregulation, approved in Russia</li>
+          <li><strong>Muscle:</strong> MK-677 &mdash; oral, most human data, enhances GH + IGF-1 + deep sleep (all critical for hypertrophy)</li>
+        </ul>
+        <strong>If picking 1 peptide total:</strong> BPC-157. It covers the widest range (tissue repair, gut, neuroprotection, recovery from training) with the most consistent preclinical evidence and the lowest barrier to entry.
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────── PROPOSED SCHEDULE ─────────────── -->
+  <section id="proposed-schedule">
+    <div class="section-title">
+      <span class="icon">📋</span> Proposed Next Plan &mdash; Daily Schedule
+    </div>
+
+    <div class="callout callout-info">
+      <div class="callout-title">What Changed (v3 &mdash; Confirmed Purchases May 2026)</div>
+      <div class="callout-body">
+        <span class="change-tag replaced">Replaced</span> L-Arginine &rarr; <strong>Nutricost L-Citrulline</strong> &#10003; &nbsp;
+        <span class="change-tag replaced">Upgraded</span> Lion's Mane &rarr; <strong>Real Mushrooms</strong> &#10003; &nbsp;
+        <span class="change-tag replaced">Swapped</span> NMN &rarr; <strong>NR (NIAGEN)</strong> &#10003; &nbsp;
+        <span class="change-tag added">Purchased</span> D3+K2+Iodine, Apigenin, NAC, CoQ10, Boron, Tongkat Ali, NR &#10003; &nbsp;
+        <span class="change-tag added">Still needed</span> Glycine (for GlyNAC), Sulforaphane (optional) &nbsp;
+        <span style="font-size:0.85rem; color: var(--text-muted);">Peptides listed separately (not daily supplements).</span>
+      </div>
+    </div>
+
+    <table class="schedule-table">
+      <thead>
+        <tr><th>Timing</th><th>Supplements</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color: var(--yellow);">Morning<br><small>Empty stomach</small></td>
+          <td>
+            <strong>L-Tyrosine</strong> <small>(workdays only)</small><br>
+            <strong>L-Theanine</strong> + Caffeine<br>
+            <strong>Lion's Mane</strong> <small>(Real Mushrooms)</small> <span class="change-tag replaced">upgraded &#10003;</span><br>
+            <strong>Alpha-Lipoic Acid</strong><br>
+            <strong>NAC</strong> <small>(600mg &mdash; GlyNAC morning half)</small> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>Tongkat Ali</strong> <small>(Nutricost, 5 on / 2 off)</small> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>Boron</strong> <small>(6mg &mdash; 2 caps Triple Boron)</small> <span class="change-tag added">purchased &#10003;</span>
+          </td>
+          <td>
+            ALA 30 min before first carbs.<br>
+            Tongkat Ali: 5 on / 2 off, or swap with Ashwagandha OFF weeks.
+          </td>
+        </tr>
+        <tr>
+          <td style="color: var(--cyan);">With Breakfast / After Lunch<br><small>With food + fat</small></td>
+          <td>
+            <strong>NAD+ Cell Regenerator (NR)</strong> <small>(with breakfast)</small> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>CoQ10 Ubiquinol</strong> <small>(100mg, with breakfast or lunch)</small> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>Omega-3</strong> <small>(3 softgels Super Omega-3)</small><br>
+            <strong>Multivitamin</strong> <small>(2 caps)</small><br>
+            <strong>Vitamin D3 + K2 + Sea-Iodine</strong> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>Creatine</strong> <small>(5g, mix in water)</small>
+          </td>
+          <td>
+            NR and CoQ10 with breakfast (both need food).<br>
+            Omega-3, Multi, D3+K2 all fat-soluble &rarr; take with fattest meal.<br>
+            Creatine: timing flexible, consistency matters most.
+          </td>
+        </tr>
+        <tr>
+          <td style="color: var(--orange);">Pre-Workout<br><small>45 min before</small></td>
+          <td>
+            <strong>L-Citrulline</strong> <small>(2-4 tablets, 2,500-5,000mg)</small> <span class="change-tag replaced">purchased &#10003;</span>
+          </td>
+          <td>
+            Nutricost 1,250mg tablets. Take 2-4 on empty stomach.<br>
+            Dramatically better bioavailability than old L-Arginine.
+          </td>
+        </tr>
+        <tr>
+          <td style="color: var(--purple);">Before Bed<br><small>1-2h before sleep</small></td>
+          <td>
+            <strong>Neuro-Mag</strong> (Mg L-Threonate)<br>
+            <strong>Ashwagandha</strong> <small>(cycle 8 on / 2 off)</small><br>
+            <strong>Apigenin</strong> <small>(50mg)</small> <span class="change-tag added">purchased &#10003;</span><br>
+            <strong>Glycine</strong> <small>(3g &mdash; GlyNAC evening half)</small> <span class="change-tag added">still needed</span>
+          </td>
+          <td>
+            Sleep stack: Mg-Threonate + Ashwagandha + Apigenin + Glycine.<br>
+            Glycine at 3g before bed independently improves sleep quality.<br>
+            Apigenin also preserves NAD+ (CD38 inhibition) &mdash; synergizes with morning NR.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin: 2rem 0 1rem; font-size: 1.05rem; color: var(--text);">Peptide Protocols (If Added &mdash; Separate from Daily Supplements)</h3>
+
+    <table>
+      <thead>
+        <tr><th>Peptide</th><th>Protocol</th><th>Duration</th><th>Route</th><th>When to Consider</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--green);">BPC-157 + TB-500</td>
+          <td>BPC: 250-500 mcg/day<br>TB-500: 2-5 mg 2x/week</td>
+          <td>4-6 weeks</td>
+          <td>SubQ</td>
+          <td>Injury, joint issues, gut healing, general recovery</td>
+        </tr>
+        <tr>
+          <td style="color:var(--green);">GHK-Cu</td>
+          <td>Topical 1-2% daily<br>or 1-2 mg/day subQ</td>
+          <td>Ongoing (topical)<br>4-8 weeks (subQ)</td>
+          <td>Topical / SubQ</td>
+          <td>Skin quality, anti-aging, wound healing</td>
+        </tr>
+        <tr>
+          <td style="color:var(--yellow);">MK-677</td>
+          <td>10-25 mg oral before bed</td>
+          <td>8-12 weeks on<br>4 weeks off</td>
+          <td>Oral</td>
+          <td>Muscle growth, body composition, deep sleep</td>
+        </tr>
+        <tr>
+          <td style="color:var(--yellow);">Semax (NASA) + Selank</td>
+          <td>Semax: 200-600 mcg/day<br>Selank: 250-500 mcg/day</td>
+          <td>10-20 day cycles<br>with equal breaks</td>
+          <td>Intranasal</td>
+          <td>Cognitive demands, high-stress periods</td>
+        </tr>
+        <tr>
+          <td style="color:var(--yellow);">Cerebrolysin</td>
+          <td>5-10 mL daily IM</td>
+          <td>10-20 day cycles<br>2-4x per year</td>
+          <td>IM injection</td>
+          <td>Peak cognitive performance periods</td>
+        </tr>
+        <tr>
+          <td style="color:var(--yellow);">Epithalon</td>
+          <td>5-10 mg/day</td>
+          <td>10-20 days, 1-2x/year</td>
+          <td>SubQ</td>
+          <td>Longevity protocol, annual maintenance</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ─────────────── NOTES ─────────────── -->
+  <section id="notes">
+    <div class="section-title">
+      <span class="icon">📝</span> Notes &amp; Caveats
+    </div>
+
+    <div class="card-grid" style="grid-template-columns: 1fr;">
+
+      <div class="callout callout-warning">
+        <div class="callout-title">On Stack Size &amp; Liver Load (Updated v2)</div>
+        <div class="callout-body">
+          Your current stack is 10 compounds. The full proposed plan would be ~17-18 compounds. That sounds like a lot, but context matters:
+          <ul style="margin: 0.5rem 0 0 1rem;">
+            <li><strong>Low liver burden additions:</strong> D3+K2 (micronutrient), Apigenin (flavonoid), Glycine (amino acid), Boron (trace mineral), CoQ10 (endogenous compound). These are not "drugs" &mdash; they're nutrients your body already uses</li>
+            <li><strong>Moderate liver burden:</strong> NAC (actually supports liver detox &mdash; it's the antidote for acetaminophen overdose), Sulforaphane (induces Phase II liver detox enzymes), NMN</li>
+            <li><strong>Phase additions:</strong> Still add 1-2 new compounds every 4-6 weeks. Suggested order:
+              <ol style="margin: 0.3rem 0 0 0.5rem;">
+                <li>Weeks 1-4: D3+K2 + Apigenin + Boron (minimal, nutrient-level)</li>
+                <li>Weeks 5-8: GlyNAC (Glycine + NAC) &mdash; split AM/PM</li>
+                <li>Weeks 9-12: CoQ10 + Sulforaphane</li>
+                <li>Weeks 13+: Tongkat Ali and/or NMN+TMG (optional, assess need)</li>
+              </ol>
+            </li>
+            <li>Get baseline bloodwork before starting. Repeat at week 12</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Interaction Notes (Updated v2)</div>
+        <div class="callout-body">
+          <ul style="margin: 0.5rem 0 0 1rem;">
+            <li><strong>Ashwagandha + Tongkat Ali:</strong> Both affect HPA axis. Don't double up continuously. Alternate or cycle them</li>
+            <li><strong>ALA + NMN:</strong> Both affect NAD+ metabolism indirectly. No known negative interaction, potentially synergistic</li>
+            <li><strong>Apigenin + Ashwagandha + Glycine:</strong> All mildly sedating. This is a feature for the bedtime slot &mdash; your sleep stack becomes very strong</li>
+            <li><strong>NAC + ALA:</strong> Both antioxidants that recycle glutathione. Synergistic, no conflict. NAC in the morning, ALA before first meal &mdash; they can go together</li>
+            <li><strong>CoQ10 + NMN:</strong> Complementary mitochondrial support. CoQ10 carries electrons in the ETC, NMN fuels NAD+ for Complex I. No conflict</li>
+            <li><strong>Sulforaphane + NAC:</strong> Both upregulate glutathione production through different pathways (Nrf2 vs. direct precursor). Synergistic for detoxification</li>
+            <li><strong>Boron + Tongkat Ali + Ashwagandha:</strong> All support free testosterone through different mechanisms (SHBG reduction, LH stimulation, cortisol reduction). Together they form a strong natural T-optimization triad</li>
+            <li><strong>Creatine + everything:</strong> No known negative interactions. Can be taken at any time. Moved to morning for simplicity</li>
+            <li><strong>L-Citrulline + Creatine:</strong> Popular pre-workout combo. Can be taken together if you train in the morning</li>
+            <li><strong>MK-677 + Glycine:</strong> Both taken at night, both improve sleep quality. MK-677 increases deep sleep stages; Glycine lowers core body temp for sleep onset. Potentially excellent synergy for recovery</li>
+            <li><strong>MK-677 + ALA:</strong> Important interaction &mdash; MK-677 can impair insulin sensitivity. ALA helps counteract this. If running MK-677, keep ALA in the stack</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-warning">
+        <div class="callout-title">On Peptide Sourcing</div>
+        <div class="callout-body">
+          <strong>This is the single most important factor in peptide use.</strong> The supplement market has quality issues; the peptide market has quality crises.
+          <ul style="margin: 0.5rem 0 0 1rem;">
+            <li>Only buy from vendors providing <strong>third-party HPLC + mass spectrometry CoA</strong> (not just vendor-provided CoA)</li>
+            <li>Purity must be &ge;98% (ideally &ge;99%)</li>
+            <li>Reputable sources frequently discussed: <strong>Peptide Sciences</strong>, <strong>Swiss Chems</strong>, <strong>Limitless Life Nootropics</strong> (for Semax/Selank nasal sprays)</li>
+            <li>If reconstituting lyophilized peptides yourself, use bacteriostatic water (BAC water), not sterile water, for multi-use vials</li>
+            <li>Store reconstituted peptides refrigerated (2-8&deg;C). Most are stable for 4-6 weeks once reconstituted</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <div class="callout-title">Recommended Bloodwork Panel (Before &amp; After)</div>
+        <div class="callout-body">
+          To properly track the impact of these changes, consider the following panel at baseline and again at 8-12 weeks:
+          <ul style="margin: 0.5rem 0 0 1rem;">
+            <li><strong>Hormonal:</strong> Total &amp; Free Testosterone, SHBG, Estradiol, DHEA-S, Cortisol (AM)</li>
+            <li><strong>Metabolic:</strong> Fasting Glucose, Fasting Insulin, HbA1c, Lipid Panel</li>
+            <li><strong>Liver:</strong> ALT, AST, GGT</li>
+            <li><strong>Thyroid:</strong> TSH, Free T3, Free T4 (especially if using Ashwagandha long-term)</li>
+            <li><strong>Vitamins:</strong> 25-OH Vitamin D, B12, Folate, Ferritin</li>
+            <li><strong>If using GH peptides:</strong> IGF-1, Fasting Insulin</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  Supplement Plan Review &mdash; May 2026 &mdash; For personal use only. Not medical advice. Consult a healthcare provider before starting any new supplement or peptide protocol.
+</div>
+
+</body>
+</html>
