@@ -9,4 +9,6 @@ TOOLS.md
 HEARTBEAT.md
 openclaw-workspace-state.json
 memory/
+MEMORY.md
 .openclaw/
+.openclaw-cli-images/
