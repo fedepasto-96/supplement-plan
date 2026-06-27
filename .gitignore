@@ -1,0 +1,12 @@
+# OpenClaw agent workspace files — keep LOCAL & PRIVATE.
+# This repo is a public GitHub Pages site (path: .), so these must
+# never be committed/published. The agent reads them from disk locally.
+AGENTS.md
+SOUL.md
+IDENTITY.md
+USER.md
+TOOLS.md
+HEARTBEAT.md
+openclaw-workspace-state.json
+memory/
+.openclaw/
