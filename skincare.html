@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skincare Routine &amp; Product Guide</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --orange: #db6d28;
+    --purple: #bc8cff;
+    --cyan: #39d2c0;
+    --pink: #f778ba;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1f35 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .header .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+
+  .header .date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13, 17, 23, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-bar a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .nav-bar a:hover {
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .section-title .icon {
+    font-size: 1.3rem;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .badge-keep { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-replace { background: rgba(248,81,73,0.15); color: var(--red); }
+  .badge-upgrade { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-new { background: rgba(88,166,255,0.15); color: var(--accent); }
+  .badge-morning { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-lunch { background: rgba(57,210,192,0.15); color: var(--cyan); }
+  .badge-evening { background: rgba(188,140,255,0.15); color: var(--purple); }
+  .badge-preworkout { background: rgba(219,109,40,0.15); color: var(--orange); }
+  .badge-tier1 { background: rgba(63,185,80,0.15); color: var(--green); }
+  .badge-tier2 { background: rgba(210,153,34,0.15); color: var(--yellow); }
+  .badge-tier3 { background: rgba(188,140,255,0.15); color: var(--purple); }
+
+  .mechanism-box {
+    background: rgba(57,210,192,0.06);
+    border: 1px solid rgba(57,210,192,0.15);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.6rem;
+    font-size: 0.83rem;
+    line-height: 1.5;
+    clear: both;
+  }
+
+  .mechanism-box .mech-label {
+    font-weight: 600;
+    color: var(--cyan);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 0.2rem;
+  }
+
+  .target-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+  }
+
+  .target-tag {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    background: rgba(57,210,192,0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(57,210,192,0.2);
+  }
+
+  .card-img {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    object-fit: cover;
+    float: left;
+    margin: 0 0.75rem 0.4rem 0;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .card-body::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+
+  .card-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .shop-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--green);
+    background: rgba(57,210,192,0.08);
+    border: 1px solid rgba(57,210,192,0.2);
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .shop-link:hover {
+    background: rgba(57,210,192,0.18);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .shop-links {
+    display: inline-flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .card-body {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  .card-body strong {
+    color: var(--text);
+  }
+
+  .card-body ul {
+    margin: 0.4rem 0 0 1.1rem;
+  }
+
+  .card-body ul li {
+    margin-bottom: 0.25rem;
+  }
+
+  .dosage {
+    display: inline-block;
+    background: var(--surface2);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    color: var(--cyan);
+    margin-top: 0.4rem;
+  }
+
+  .timing-tag {
+    display: inline-block;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+  }
+
+  .verdict-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 0.6rem 0.9rem;
+    margin-top: 0.75rem;
+    border-radius: 0 6px 6px 0;
+    clear: both;
+    font-size: 0.85rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+
+  table th {
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    background: var(--surface2);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+
+  table td {
+    padding: 0.65rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  table tr:hover td {
+    background: rgba(88,166,255,0.04);
+  }
+
+  .schedule-table td:first-child {
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+    width: 120px;
+  }
+
+  .peptide-card {
+    border-left: 3px solid transparent;
+  }
+
+  .peptide-card.tier-1 { border-left-color: var(--green); }
+  .peptide-card.tier-2 { border-left-color: var(--yellow); }
+  .peptide-card.tier-3 { border-left-color: var(--purple); }
+
+  .evidence-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .evidence-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .evidence-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  .evidence-dot.filled { background: var(--green); }
+  .evidence-dot.half { background: var(--yellow); }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .callout-warning {
+    border-left: 3px solid var(--yellow);
+  }
+
+  .callout-info {
+    border-left: 3px solid var(--accent);
+  }
+
+  .callout-title {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .callout-body {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .change-tag {
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
+
+  .change-tag.added { background: rgba(63,185,80,0.2); color: var(--green); }
+  .change-tag.removed { background: rgba(248,81,73,0.2); color: var(--red); }
+  .change-tag.replaced { background: rgba(210,153,34,0.2); color: var(--yellow); }
+
+  .comparison-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+    margin: 1rem 0;
+  }
+
+  .comparison-arrow {
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  .stack-cost {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .cost-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+  }
+
+  .cost-item .label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .cost-item .value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 0.2rem;
+  }
+
+  .toggle-section {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-section .arrow {
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  @media (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr; }
+    .container { padding: 1rem; }
+    .header { padding: 2rem 1rem; }
+    .header h1 { font-size: 1.6rem; }
+    .comparison-row { grid-template-columns: 1fr; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Skincare Routine &amp; Product Guide</h1>
+  <div class="subtitle">Active Ingredients &middot; How They Work &middot; Application &amp; AM/PM Timing</div>
+  <div class="date">July 2026 &middot; Companion to the supplement plan</div>
+</div>
+
+<nav class="nav-bar">
+  <a href="index.html">&larr; Supplement Plan</a>
+  <a href="#routine">Daily Routine</a>
+  <a href="#products">Products</a>
+  <a href="#tips">Tips &amp; Cautions</a>
+</nav>
+
+<div class="container">
+
+  <!-- ─────────────── ROUTINE ─────────────── -->
+  <section id="routine">
+    <div class="section-title"><span class="icon">🧴</span> Suggested Daily Routine</div>
+    <div class="callout callout-info">
+      <div class="callout-title">Golden rule: thinnest to thickest</div>
+      <div class="callout-body">Apply watery serums before creams, wait ~30&ndash;60 seconds between layers so each absorbs, and always finish the morning with SPF &mdash; azelaic acid and caffeine both perform better on UV-protected skin.</div>
+    </div>
+    <table>
+      <thead><tr><th>Step</th><th>&#9728;&#65039; Morning (AM)</th><th>&#127769; Night (PM)</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;">1 &middot; Cleanse</td><td>Gentle cleanser</td><td>Gentle cleanser</td></tr>
+        <tr><td style="font-weight:600;">2 &middot; Eyes</td><td>Caffeine 5% + EGCG</td><td>Caffeine 5% + EGCG</td></tr>
+        <tr><td style="font-weight:600;">3 &middot; Treat</td><td><small>&mdash; keep AM simple</small></td><td>Azelaic Acid 10</td></tr>
+        <tr><td style="font-weight:600;">4 &middot; Hydrate</td><td>PDRN Hyaluronic Acid</td><td>PDRN Hyaluronic Acid</td></tr>
+        <tr><td style="font-weight:600;">5 &middot; Seal</td><td>Moisturizer</td><td>Moisturizer</td></tr>
+        <tr><td style="font-weight:600;">6 &middot; Protect</td><td style="color:var(--yellow); font-weight:600;">SPF 30+ (essential)</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <p style="color:var(--text-muted); font-size:0.85rem; margin-top:0.6rem;">Azelaic can move to AM too once your skin tolerates it &mdash; just never skip sunscreen. Start azelaic at 2&ndash;3&times;/week and build up to daily.</p>
+  </section>
+
+  <!-- ─────────────── PRODUCTS ─────────────── -->
+  <section id="products">
+    <div class="section-title"><span class="icon">✨</span> Product Cards</div>
+    <div class="card-grid">
+
+      <div class="card" style="border-left: 3px solid var(--cyan);">
+        <div class="card-header">
+          <span class="card-title">Caffeine Solution 5% + EGCG</span>
+          <span class="badge badge-new">Eye Serum</span>
+        </div>
+        <div class="card-meta"><span>The Ordinary &middot; Under-eye</span> <a href="https://theordinary.com/en-us/caffeine-solution-5-egcg-eye-serum-100412.html" class="shop-link" target="_blank" rel="noopener">&#128279; Product</a></div>
+        <div class="card-body">
+          <strong>What it targets:</strong> Under-eye puffiness, dark circles, and tired-looking eyes.
+          <ul>
+            <li><strong>Caffeine 5%:</strong> de-puffs and visibly brightens the under-eye</li>
+            <li><strong>EGCG (green-tea antioxidant):</strong> protects and soothes the delicate eye skin</li>
+            <li>Clinically visible improvement in dark circles &amp; puffiness in ~3 weeks</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            <strong>Caffeine</strong> is a vasoconstrictor and mild diuretic &mdash; it tightens the dilated blood vessels behind bluish dark circles and drains the fluid that causes puffiness. <strong>EGCG</strong> (epigallocatechin gallatyl glucoside) is a potent green-tea polyphenol that neutralizes free radicals and calms inflammation in the thin peri-orbital skin.
+            <div class="target-tags">
+              <span class="target-tag">Vasoconstriction</span>
+              <span class="target-tag">Fluid drainage</span>
+              <span class="target-tag">Antioxidant (EGCG)</span>
+            </div>
+          </div>
+          <span class="dosage">How to apply: pea-sized amount, dab along the orbital bone with your ring finger and pat in gently &mdash; after cleansing/toner, before moisturizer.</span>
+          <div class="timing-tag"><span class="badge badge-morning">AM</span> <span class="badge badge-evening">PM</span></div>
+          <div class="verdict-box"><strong>Pro tip:</strong> keep it in the fridge &mdash; the cooling de-puffs even more, ideal in the morning or after a late night. Give it ~3 weeks of daily use for dark circles.</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--yellow);">
+        <div class="card-header">
+          <span class="card-title">Azelaic Acid 10 + Hyaluron</span>
+          <span class="badge badge-new">Treatment</span>
+        </div>
+        <div class="card-meta"><span>Anua &middot; Redness / texture</span> <a href="https://anua.com/products/azelaic-acid-10-hyaluron-redness-soothing-serum" class="shop-link" target="_blank" rel="noopener">&#128279; Product</a></div>
+        <div class="card-body">
+          <strong>What it targets:</strong> Redness, breakouts, uneven texture, and post-acne marks.
+          <ul>
+            <li><strong>10% Azelaic acid:</strong> calms redness, clears and prevents breakouts, evens tone</li>
+            <li><strong>3 types hyaluronic acid:</strong> offset dryness so the acid stays comfortable</li>
+            <li><strong>Calming complex</strong> (cica, aloe, green tea, blue tansy): soothes irritation</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            <strong>Azelaic acid</strong> is antibacterial against <em>C. acnes</em>, anti-inflammatory (quiets the redness of acne/rosacea), normalizes pore-lining cell turnover (unclogs pores), and inhibits <strong>tyrosinase</strong> &rarr; fading hyperpigmentation and post-acne marks. It is gentle enough for sensitive skin, unlike most exfoliating acids.
+            <div class="target-tags">
+              <span class="target-tag">Anti-C. acnes</span>
+              <span class="target-tag">Anti-inflammatory</span>
+              <span class="target-tag">Tyrosinase inhibition</span>
+              <span class="target-tag">Pore normalization</span>
+            </div>
+          </div>
+          <span class="dosage">How to apply: 1&ndash;2 drops (up to 5) between toner and moisturizer. Start 2&ndash;3&times;/week and build to daily as tolerated.</span>
+          <div class="timing-tag"><span class="badge badge-evening">PM preferred</span> <span class="badge badge-morning">AM ok + SPF</span></div>
+          <div class="verdict-box"><strong>Caution:</strong> a mild tingle is normal &mdash; ease in slowly. If you use it in the morning, sunscreen (SPF 30+) is non-negotiable. Do not pile it on top of other strong actives while breaking it in.</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-left: 3px solid var(--pink);">
+        <div class="card-header">
+          <span class="card-title">PDRN Hyaluronic Acid Capsule 100</span>
+          <span class="badge badge-new">Repair / Hydrate</span>
+        </div>
+        <div class="card-meta"><span>Anua &middot; Barrier &amp; glow</span> <a href="https://anua.com/products/pdrn-hyaluronic-acid-capsule-100-serum" class="shop-link" target="_blank" rel="noopener">&#128279; Product</a></div>
+        <div class="card-body">
+          <strong>What it targets:</strong> Deep hydration, plumping, barrier repair, and a dewy glow.
+          <ul>
+            <li><strong>PDRN (salmon DNA fragments):</strong> stimulates repair, elasticity, smoother texture</li>
+            <li><strong>11 types hyaluronic acid:</strong> multi-depth hydration, plumps fine lines</li>
+            <li><strong>Hydrolyzed collagen:</strong> reinforces the skin barrier and firmness</li>
+          </ul>
+          <div class="mechanism-box">
+            <span class="mech-label">How it works &amp; target</span>
+            <strong>PDRN</strong> (polydeoxyribonucleotide) activates <strong>fibroblasts</strong> and the adenosine A2A pathway &rarr; driving DNA synthesis, tissue repair and micro-circulation, which improves texture and elasticity. The <strong>multi-weight hyaluronic acid</strong> pulls water into every skin layer while collagen shores up the barrier &mdash; together giving that plump "glass-skin" finish.
+            <div class="target-tags">
+              <span class="target-tag">Fibroblast activation</span>
+              <span class="target-tag">Barrier repair</span>
+              <span class="target-tag">Multi-depth hydration</span>
+              <span class="target-tag">Elasticity</span>
+            </div>
+          </div>
+          <span class="dosage">How to apply: a few drops patted in after treatments, before moisturizer &mdash; ideal right after azelaic to re-hydrate.</span>
+          <div class="timing-tag"><span class="badge badge-morning">AM</span> <span class="badge badge-evening">PM</span></div>
+          <div class="verdict-box"><strong>Pro tip:</strong> at night you can layer 2&ndash;3 coats as a mini "sleeping mask" for extra plump by morning. This is your barrier-repair workhorse &mdash; it keeps skin calm and hydrated alongside the azelaic.</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─────────────── TIPS ─────────────── -->
+  <section id="tips">
+    <div class="section-title"><span class="icon">📋</span> Tips &amp; Cautions</div>
+    <div class="card">
+      <div class="card-body">
+        <ul>
+          <li><strong>SPF is the multiplier.</strong> Azelaic, caffeine and PDRN all deliver better results on UV-protected skin &mdash; SPF 30+ every morning, no exceptions.</li>
+          <li><strong>Introduce one active at a time.</strong> Azelaic is the only strong active here &mdash; give it 1&ndash;2 weeks before pushing to daily. Caffeine and PDRN are gentle and can be daily from day one.</li>
+          <li><strong>Layering:</strong> watery serums first, cream last; wait ~30&ndash;60 seconds between layers.</li>
+          <li><strong>Patch test</strong> a new serum on the jaw for a couple of days before full-face use.</li>
+          <li><strong>Consistency &gt; intensity.</strong> Most results show at the 3&ndash;4 week mark with steady daily use &mdash; stick with it.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">Skincare companion page &middot; Same format as the supplement plan &middot; Updated July 2026</div>
+
+</div>
+</body>
+</html>
